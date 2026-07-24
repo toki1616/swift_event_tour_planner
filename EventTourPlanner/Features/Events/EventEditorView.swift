@@ -9,6 +9,8 @@ struct EventEditorView: View {
 
     @State private var title: String
     @State private var venue: String
+    @State private var websiteURL: String
+    @State private var electronicTicketURL: String
     @State private var eventType: EventType
     @State private var meetupDate: Date
     @State private var doorsOpenDate: Date
@@ -27,6 +29,8 @@ struct EventEditorView: View {
     private enum Field {
         case title
         case venue
+        case websiteURL
+        case electronicTicketURL
         case budget
     }
 
@@ -43,6 +47,8 @@ struct EventEditorView: View {
         let defaultScheduledEndDate = eventType.defaultScheduledEndDate(for: startDate)
         _title = State(initialValue: event?.title ?? "")
         _venue = State(initialValue: event?.venue ?? "")
+        _websiteURL = State(initialValue: event?.websiteURL ?? "")
+        _electronicTicketURL = State(initialValue: event?.electronicTicketURL ?? "")
         _eventType = State(initialValue: eventType)
         _meetupDate = State(
             initialValue: event?.meetupDate ?? defaultMeetupDate
@@ -93,6 +99,19 @@ struct EventEditorView: View {
                     Button("標準時間に戻す") {
                         applyDefaultSchedule()
                     }
+                }
+
+                Section("リンク") {
+                    urlTextField(
+                        "サイトURL（任意）",
+                        text: $websiteURL,
+                        field: .websiteURL
+                    )
+                    urlTextField(
+                        "電子チケットURL（任意）",
+                        text: $electronicTicketURL,
+                        field: .electronicTicketURL
+                    )
                 }
 
                 budgetSection
@@ -184,6 +203,8 @@ struct EventEditorView: View {
                 event,
                 title: title,
                 venue: venue,
+                websiteURL: websiteURL,
+                electronicTicketURL: electronicTicketURL,
                 eventType: eventType,
                 meetupDate: meetupDate,
                 doorsOpenDate: doorsOpenDate,
@@ -195,6 +216,8 @@ struct EventEditorView: View {
             return viewModel.addEvent(
                 title: title,
                 venue: venue,
+                websiteURL: websiteURL,
+                electronicTicketURL: electronicTicketURL,
                 eventType: eventType,
                 meetupDate: meetupDate,
                 doorsOpenDate: doorsOpenDate,
@@ -204,6 +227,20 @@ struct EventEditorView: View {
                 expenses: expenseDrafts
             )
         }
+    }
+
+    private func urlTextField(
+        _ title: LocalizedStringKey,
+        text: Binding<String>,
+        field: Field
+    ) -> some View {
+        TextField(title, text: text)
+            .keyboardType(.URL)
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled()
+            .textContentType(.URL)
+            .focused($focusedField, equals: field)
+            .submitLabel(.done)
     }
 
     private var meetupDateBinding: Binding<Date> {

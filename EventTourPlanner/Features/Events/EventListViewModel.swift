@@ -26,6 +26,8 @@ final class EventListViewModel {
     func addEvent(
         title: String,
         venue: String,
+        websiteURL: String,
+        electronicTicketURL: String,
         eventType: EventType,
         meetupDate: Date,
         doorsOpenDate: Date,
@@ -44,6 +46,8 @@ final class EventListViewModel {
             let event = LiveEvent(
                 title: input.title,
                 venue: input.venue,
+                websiteURL: websiteURL.trimmingCharacters(in: .whitespacesAndNewlines),
+                electronicTicketURL: electronicTicketURL.trimmingCharacters(in: .whitespacesAndNewlines),
                 eventType: eventType,
                 meetupDate: meetupDate,
                 doorsOpenDate: doorsOpenDate,
@@ -73,6 +77,8 @@ final class EventListViewModel {
         _ event: LiveEvent,
         title: String,
         venue: String,
+        websiteURL: String,
+        electronicTicketURL: String,
         eventType: EventType,
         meetupDate: Date,
         doorsOpenDate: Date,
@@ -89,6 +95,8 @@ final class EventListViewModel {
         let previousValues = (
             title: event.title,
             venue: event.venue,
+            websiteURL: event.websiteURL,
+            electronicTicketURL: event.electronicTicketURL,
             eventType: event.eventType,
             meetupDate: event.meetupDate,
             doorsOpenDate: event.doorsOpenDate,
@@ -99,6 +107,8 @@ final class EventListViewModel {
 
         event.title = input.title
         event.venue = input.venue
+        event.websiteURL = websiteURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        event.electronicTicketURL = electronicTicketURL.trimmingCharacters(in: .whitespacesAndNewlines)
         event.eventType = eventType
         event.meetupDate = meetupDate
         event.doorsOpenDate = doorsOpenDate
@@ -113,6 +123,8 @@ final class EventListViewModel {
         } catch {
             event.title = previousValues.title
             event.venue = previousValues.venue
+            event.websiteURL = previousValues.websiteURL
+            event.electronicTicketURL = previousValues.electronicTicketURL
             event.eventType = previousValues.eventType
             event.meetupDate = previousValues.meetupDate
             event.doorsOpenDate = previousValues.doorsOpenDate

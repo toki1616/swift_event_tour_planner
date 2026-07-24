@@ -388,6 +388,26 @@
         }
       }
     },
+    "サイトURL（任意）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Website URL (Optional)"
+          }
+        }
+      }
+    },
+    "リンク" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Links"
+          }
+        }
+      }
+    },
     "種類" : {
       "localizations" : {
         "en" : {
@@ -434,6 +454,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edit"
+          }
+        }
+      }
+    },
+    "電子チケットURL（任意）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Electronic Ticket URL (Optional)"
           }
         }
       }

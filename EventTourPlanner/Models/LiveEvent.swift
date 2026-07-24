@@ -32,6 +32,8 @@ enum EventType: String, CaseIterable, Identifiable {
 final class LiveEvent {
     var title: String
     var venue: String
+    var websiteURL: String = ""
+    var electronicTicketURL: String = ""
     var eventTypeRawValue: String = EventType.live.rawValue
     var meetupDate: Date?
     var doorsOpenDate: Date?
@@ -62,6 +64,8 @@ final class LiveEvent {
     init(
         title: String,
         venue: String,
+        websiteURL: String = "",
+        electronicTicketURL: String = "",
         eventType: EventType = .live,
         meetupDate: Date? = nil,
         doorsOpenDate: Date? = nil,
@@ -71,6 +75,8 @@ final class LiveEvent {
     ) {
         self.title = title
         self.venue = venue
+        self.websiteURL = websiteURL
+        self.electronicTicketURL = electronicTicketURL
         self.eventTypeRawValue = eventType.rawValue
         self.meetupDate = meetupDate
         self.doorsOpenDate = doorsOpenDate
