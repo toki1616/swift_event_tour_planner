@@ -29,17 +29,23 @@ struct EventDetailView: View {
                 }
             }
 
-            if websiteURL != nil || electronicTicketURL != nil {
+            if hasWebsiteURL || hasElectronicTicketURL {
                 Section("リンク") {
-                    if let websiteURL {
-                        Link(destination: websiteURL) {
-                            Label("サイトを開く", systemImage: "safari")
-                        }
+                    if hasWebsiteURL {
+                        urlRow(
+                            title: "サイトを開く",
+                            urlString: event.websiteURL,
+                            destination: websiteURL,
+                            systemImage: "safari"
+                        )
                     }
-                    if let electronicTicketURL {
-                        Link(destination: electronicTicketURL) {
-                            Label("電子チケットを開く", systemImage: "ticket")
-                        }
+                    if hasElectronicTicketURL {
+                        urlRow(
+                            title: "電子チケットを開く",
+                            urlString: event.electronicTicketURL,
+                            destination: electronicTicketURL,
+                            systemImage: "ticket"
+                        )
                     }
                 }
             }
@@ -120,6 +126,35 @@ struct EventDetailView: View {
             .monospacedDigit()
     }
 
+    @ViewBuilder
+    private func urlRow(
+        title: LocalizedStringKey,
+        urlString: String,
+        destination: URL?,
+        systemImage: String
+    ) -> some View {
+        let content = Label {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .foregroundStyle(.primary)
+                Text(urlString)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+        } icon: {
+            Image(systemName: systemImage)
+        }
+
+        if let destination {
+            Link(destination: destination) {
+                content
+            }
+        } else {
+            content
+        }
+    }
+
     private var sortedExpenses: [EventExpense] {
         event.expenses.sorted { $0.createdAt < $1.createdAt }
     }
@@ -128,8 +163,16 @@ struct EventDetailView: View {
         normalizedURL(from: event.websiteURL)
     }
 
+    private var hasWebsiteURL: Bool {
+        !event.websiteURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
     private var electronicTicketURL: URL? {
         normalizedURL(from: event.electronicTicketURL)
+    }
+
+    private var hasElectronicTicketURL: Bool {
+        !event.electronicTicketURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     private func normalizedURL(from input: String) -> URL? {
