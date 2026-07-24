@@ -142,8 +142,8 @@ struct EventListView: View {
     private func eventRow(_ event: LiveEvent) -> some View {
         HStack(alignment: .top, spacing: 16) {
             VStack(alignment: .leading, spacing: 3) {
-                if let doorsOpenDate = event.doorsOpenDate {
-                    timeLabel("開場", date: doorsOpenDate)
+                if let meetupDate = event.meetupDate {
+                    timeLabel("集合", date: meetupDate)
                 }
                 timeLabel("開演", date: event.startDate)
             }

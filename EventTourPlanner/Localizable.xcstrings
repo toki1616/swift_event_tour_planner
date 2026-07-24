@@ -262,6 +262,16 @@
         }
       }
     },
+    "この費用を削除しますか？" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete this expense?"
+          }
+        }
+      }
+    },
     "これから参加するイベントを追加しましょう。" : {
       "localizations" : {
         "en" : {
@@ -342,12 +352,32 @@
         }
       }
     },
+    "完了" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        }
+      }
+    },
     "支出済み" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spent"
+          }
+        }
+      }
+    },
+    "時間" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule"
           }
         }
       }
@@ -362,12 +392,12 @@
         }
       }
     },
-    "完了" : {
+    "終演予定時間" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Done"
+            "value" : "Scheduled End"
           }
         }
       }
@@ -378,16 +408,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edit"
-          }
-        }
-      }
-    },
-    "この費用を削除しますか？" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete this expense?"
           }
         }
       }
@@ -443,22 +463,12 @@
         }
       }
     },
-    "時間" : {
+    "金額" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schedule"
-          }
-        }
-      }
-    },
-    "集合時間" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meet-up Time"
+            "value" : "Amount"
           }
         }
       }
@@ -493,6 +503,17 @@
         }
       }
     },
+    "開演日時" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Date and Time"
+          }
+        }
+      }
+    },
     "開演時間" : {
       "localizations" : {
         "en" : {
@@ -503,32 +524,22 @@
         }
       }
     },
-    "終演予定時間" : {
+    "集合" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scheduled End"
+            "value" : "Meet"
           }
         }
       }
     },
-    "金額" : {
+    "集合時間" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Amount"
-          }
-        }
-      }
-    },
-    "開演日時" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start Date and Time"
+            "value" : "Meet-up Time"
           }
         }
       }
