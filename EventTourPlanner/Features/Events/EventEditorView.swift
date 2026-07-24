@@ -15,9 +15,7 @@ struct EventEditorView: View {
     @State private var startDate: Date
     @State private var scheduledEndDate: Date
     @State private var budget: Int?
-    @State private var expenseName = ""
-    @State private var expenseAmount: Int?
-    @State private var expenseCategory = ExpenseCategory.ticket
+    @State private var isShowingExpenseEditor = false
     @State private var editingExpense: EventExpense?
     @State private var isMeetupDateCustomized: Bool
     @State private var isDoorsOpenDateCustomized: Bool
@@ -28,8 +26,6 @@ struct EventEditorView: View {
         case title
         case venue
         case budget
-        case expenseName
-        case expenseAmount
     }
 
     init(
@@ -123,8 +119,20 @@ struct EventEditorView: View {
 
             }
             .keyboardDoneButton(focusedField: $focusedField)
+            .sheet(isPresented: $isShowingExpenseEditor) {
+                if let event {
+                    ExpenseEditorView { name, amount, category in
+                        viewModel.addExpense(
+                            name: name,
+                            amount: amount,
+                            category: category,
+                            to: event
+                        )
+                    }
+                }
+            }
             .sheet(item: $editingExpense) { expense in
-                ExpenseEditorSheet(
+                ExpenseEditorView(
                     expense: expense,
                     onSave: { name, amount, category in
                         viewModel.updateExpense(
@@ -278,33 +286,10 @@ struct EventEditorView: View {
                 }
             }
 
-            Picker("カテゴリ", selection: $expenseCategory) {
-                ForEach(ExpenseCategory.allCases) { category in
-                    Label(category.title, systemImage: category.systemImage)
-                        .tag(category)
-                }
-            }
-
-            TextField("費用名（任意）", text: $expenseName)
-                .focused($focusedField, equals: .expenseName)
-                .submitLabel(.done)
-
-            HStack {
-                TextField(
-                    "金額",
-                    value: $expenseAmount,
-                    format: .number
-                )
-                .keyboardType(.numberPad)
-                .focused($focusedField, equals: .expenseAmount)
-
-                Button {
-                    addExpense(to: event)
-                } label: {
-                    Image(systemName: "plus.circle.fill")
-                        .font(.title3)
-                }
-                .disabled((expenseAmount ?? 0) <= 0)
+            Button {
+                isShowingExpenseEditor = true
+            } label: {
+                Label("費用を追加", systemImage: "plus.circle.fill")
             }
         } header: {
             Text("費用")
@@ -321,19 +306,6 @@ struct EventEditorView: View {
 
     private func sortedExpenses(for event: LiveEvent) -> [EventExpense] {
         event.expenses.sorted { $0.createdAt < $1.createdAt }
-    }
-
-    private func addExpense(to event: LiveEvent) {
-        guard let amount = expenseAmount else { return }
-        if viewModel.addExpense(
-            name: expenseName,
-            amount: amount,
-            category: expenseCategory,
-            to: event
-        ) {
-            expenseName = ""
-            expenseAmount = nil
-        }
     }
 
     private var budgetSection: some View {
@@ -405,97 +377,5 @@ struct EventEditorView: View {
         let amount: Int
 
         var id: ExpenseCategory { category }
-    }
-}
-
-private struct ExpenseEditorSheet: View {
-    @Environment(\.dismiss) private var dismiss
-
-    let expense: EventExpense
-    let onSave: (String, Int, ExpenseCategory) -> Bool
-    let onDelete: () -> Void
-
-    @State private var name: String
-    @State private var amount: Int?
-    @State private var category: ExpenseCategory
-    @State private var isShowingDeleteConfirmation = false
-    @FocusState private var focusedField: Field?
-
-    private enum Field {
-        case name
-        case amount
-    }
-
-    init(
-        expense: EventExpense,
-        onSave: @escaping (String, Int, ExpenseCategory) -> Bool,
-        onDelete: @escaping () -> Void
-    ) {
-        self.expense = expense
-        self.onSave = onSave
-        self.onDelete = onDelete
-        _name = State(initialValue: expense.name)
-        _amount = State(initialValue: expense.amount)
-        _category = State(initialValue: expense.category)
-    }
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("費用") {
-                    Picker("カテゴリ", selection: $category) {
-                        ForEach(ExpenseCategory.allCases) { category in
-                            Label(category.title, systemImage: category.systemImage)
-                                .tag(category)
-                        }
-                    }
-
-                    TextField("費用名（任意）", text: $name)
-                        .focused($focusedField, equals: .name)
-                        .submitLabel(.done)
-                    TextField("金額", value: $amount, format: .number)
-                        .keyboardType(.numberPad)
-                        .focused($focusedField, equals: .amount)
-                }
-
-                Section {
-                    Button("削除", role: .destructive) {
-                        isShowingDeleteConfirmation = true
-                    }
-                }
-            }
-            .navigationTitle("費用を編集")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") {
-                        dismiss()
-                    }
-                }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("保存") {
-                        guard let amount else { return }
-                        if onSave(name, amount, category) {
-                            dismiss()
-                        }
-                    }
-                    .disabled((amount ?? 0) <= 0)
-                }
-
-            }
-            .keyboardDoneButton(focusedField: $focusedField)
-            .confirmationDialog(
-                "この費用を削除しますか？",
-                isPresented: $isShowingDeleteConfirmation,
-                titleVisibility: .visible
-            ) {
-                Button("削除", role: .destructive) {
-                    onDelete()
-                    dismiss()
-                }
-                Button("キャンセル", role: .cancel) {}
-            }
-        }
     }
 }

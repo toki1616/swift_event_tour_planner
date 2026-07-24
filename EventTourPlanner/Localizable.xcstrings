@@ -458,6 +458,16 @@
         }
       }
     },
+    "費用を追加" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Expense"
+          }
+        }
+      }
+    },
     "費用を編集" : {
       "localizations" : {
         "en" : {
