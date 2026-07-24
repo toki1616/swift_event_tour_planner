@@ -97,7 +97,10 @@ struct EventEditorView: View {
 
             ForEach(sortedExpenses(for: event)) { expense in
                 HStack {
-                    Label(expense.name, systemImage: expense.category.systemImage)
+                    Label(
+                        expense.name.isEmpty ? expense.category.title : expense.name,
+                        systemImage: expense.category.systemImage
+                    )
 
                     Spacer()
 
@@ -119,7 +122,7 @@ struct EventEditorView: View {
                 }
             }
 
-            TextField("費用名", text: $expenseName)
+            TextField("費用名（任意）", text: $expenseName)
 
             HStack {
                 TextField(
@@ -135,10 +138,7 @@ struct EventEditorView: View {
                     Image(systemName: "plus.circle.fill")
                         .font(.title3)
                 }
-                .disabled(
-                    expenseName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                        || (expenseAmount ?? 0) <= 0
-                )
+                .disabled((expenseAmount ?? 0) <= 0)
             }
         } header: {
             Text("費用")

@@ -109,10 +109,6 @@ final class EventListViewModel {
         to event: LiveEvent
     ) -> Bool {
         let normalizedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !normalizedName.isEmpty else {
-            errorMessage = String(localized: "validation.expense_name_required")
-            return false
-        }
         guard amount > 0 else {
             errorMessage = String(localized: "validation.expense_amount_positive")
             return false
