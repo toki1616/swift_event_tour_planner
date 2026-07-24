@@ -388,12 +388,32 @@
         }
       }
     },
+    "https://example.com" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://example.com"
+          }
+        }
+      }
+    },
     "サイトURL（任意）" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Website URL (Optional)"
+          }
+        }
+      }
+    },
+    "サイトを開く" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Website"
           }
         }
       }
@@ -464,6 +484,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Electronic Ticket URL (Optional)"
+          }
+        }
+      }
+    },
+    "電子チケットを開く" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Electronic Ticket"
           }
         }
       }
