@@ -114,6 +114,72 @@
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Total" } }
       }
     },
+    "予算" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Budget" } }
+      }
+    },
+    "予算額" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Budget Amount" } }
+      }
+    },
+    "支出済み" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Spent" } }
+      }
+    },
+    "残額" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Remaining" } }
+      }
+    },
+    "カテゴリ" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Category" } }
+      }
+    },
+    "費用の内訳" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Expense Breakdown" } }
+      }
+    },
+    "expense.category.ticket" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Tickets" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "チケット" } }
+      }
+    },
+    "expense.category.transportation" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Transportation" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "交通" } }
+      }
+    },
+    "expense.category.accommodation" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Accommodation" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "宿泊" } }
+      }
+    },
+    "expense.category.goods" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Goods" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "グッズ" } }
+      }
+    },
+    "expense.category.food" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Food" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "飲食" } }
+      }
+    },
+    "expense.category.other" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Other" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "その他" } }
+      }
+    },
     "delete.confirmation_format" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Delete “%@”?" } },

@@ -156,15 +156,25 @@ struct EventListView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                if !event.expenses.isEmpty {
+                if event.budget > 0 {
+                    ProgressView(value: min(event.budgetUsageRate, 1))
+                        .tint(event.totalExpense > event.budget ? .red : .accentColor)
+
                     Label {
                         Text(
-                            event.totalExpense,
-                            format: .currency(code: currencyCode)
+                            "\(event.totalExpense.formatted(.currency(code: currencyCode))) / \(event.budget.formatted(.currency(code: currencyCode)))"
                         )
-                        .monospacedDigit()
                     } icon: {
-                        Image(systemName: "yensign.circle")
+                        Image(systemName: "chart.pie")
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                } else if !event.expenses.isEmpty {
+                    Label {
+                        Text(event.totalExpense, format: .currency(code: currencyCode))
+                            .monospacedDigit()
+                    } icon: {
+                        Image(systemName: "chart.pie")
                     }
                     .font(.subheadline)
                     .foregroundStyle(.secondary)

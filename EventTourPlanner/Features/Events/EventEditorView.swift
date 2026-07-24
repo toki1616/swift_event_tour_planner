@@ -1,4 +1,5 @@
 import SwiftUI
+import Charts
 
 struct EventEditorView: View {
     @Environment(\.dismiss) private var dismiss
@@ -9,8 +10,10 @@ struct EventEditorView: View {
     @State private var title: String
     @State private var venue: String
     @State private var startDate: Date
+    @State private var budget: Int?
     @State private var expenseName = ""
     @State private var expenseAmount: Int?
+    @State private var expenseCategory = ExpenseCategory.ticket
 
     init(
         viewModel: EventListViewModel,
@@ -21,6 +24,7 @@ struct EventEditorView: View {
         _title = State(initialValue: event?.title ?? "")
         _venue = State(initialValue: event?.venue ?? "")
         _startDate = State(initialValue: event?.startDate ?? Date())
+        _budget = State(initialValue: event.map(\.budget))
     }
 
     var body: some View {
@@ -35,6 +39,8 @@ struct EventEditorView: View {
                         displayedComponents: [.date, .hourAndMinute]
                     )
                 }
+
+                budgetSection
 
                 if let event {
                     expenseSection(for: event)
@@ -67,22 +73,31 @@ struct EventEditorView: View {
                 event,
                 title: title,
                 venue: venue,
-                startDate: startDate
+                startDate: startDate,
+                budget: budget ?? 0
             )
         } else {
             return viewModel.addEvent(
                 title: title,
                 venue: venue,
-                startDate: startDate
+                startDate: startDate,
+                budget: budget ?? 0
             )
         }
     }
 
     private func expenseSection(for event: LiveEvent) -> some View {
         Section {
+            if !event.expenses.isEmpty {
+                expenseChart(for: event)
+                    .frame(height: 220)
+                    .listRowInsets(EdgeInsets())
+                    .padding()
+            }
+
             ForEach(sortedExpenses(for: event)) { expense in
                 HStack {
-                    Text(expense.name)
+                    Label(expense.name, systemImage: expense.category.systemImage)
 
                     Spacer()
 
@@ -94,6 +109,13 @@ struct EventEditorView: View {
                 let expenses = sortedExpenses(for: event)
                 for index in offsets {
                     viewModel.deleteExpense(expenses[index])
+                }
+            }
+
+            Picker("カテゴリ", selection: $expenseCategory) {
+                ForEach(ExpenseCategory.allCases) { category in
+                    Label(category.title, systemImage: category.systemImage)
+                        .tag(category)
                 }
             }
 
@@ -137,13 +159,84 @@ struct EventEditorView: View {
 
     private func addExpense(to event: LiveEvent) {
         guard let amount = expenseAmount else { return }
-        if viewModel.addExpense(name: expenseName, amount: amount, to: event) {
+        if viewModel.addExpense(
+            name: expenseName,
+            amount: amount,
+            category: expenseCategory,
+            to: event
+        ) {
             expenseName = ""
             expenseAmount = nil
         }
     }
 
+    private var budgetSection: some View {
+        Section("予算") {
+            TextField("予算額", value: $budget, format: .number)
+                .keyboardType(.numberPad)
+
+            if let event, (budget ?? 0) > 0 {
+                LabeledContent("支出済み") {
+                    Text(event.totalExpense, format: .currency(code: currencyCode))
+                        .monospacedDigit()
+                }
+
+                LabeledContent("残額") {
+                    Text(
+                        (budget ?? 0) - event.totalExpense,
+                        format: .currency(code: currencyCode)
+                    )
+                    .monospacedDigit()
+                    .foregroundStyle(event.totalExpense > (budget ?? 0) ? .red : .primary)
+                }
+
+                ProgressView(value: usageRate(for: event))
+                    .tint(event.totalExpense > (budget ?? 0) ? .red : .accentColor)
+
+                Text(usageRate(for: event), format: .percent.precision(.fractionLength(0)))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private func expenseChart(for event: LiveEvent) -> some View {
+        Chart(expenseSummaries(for: event)) { summary in
+            SectorMark(
+                angle: .value("金額", summary.amount),
+                innerRadius: .ratio(0.58),
+                angularInset: 2
+            )
+            .foregroundStyle(by: .value("カテゴリ", summary.category.title))
+        }
+        .chartLegend(position: .bottom, alignment: .center, spacing: 8)
+        .accessibilityLabel("費用の内訳")
+    }
+
+    private func expenseSummaries(for event: LiveEvent) -> [ExpenseSummary] {
+        Dictionary(grouping: event.expenses, by: \.category)
+            .map { category, expenses in
+                ExpenseSummary(
+                    category: category,
+                    amount: expenses.reduce(0) { $0 + $1.amount }
+                )
+            }
+            .sorted { $0.category.rawValue < $1.category.rawValue }
+    }
+
+    private func usageRate(for event: LiveEvent) -> Double {
+        guard (budget ?? 0) > 0 else { return 0 }
+        return Double(event.totalExpense) / Double(budget ?? 0)
+    }
+
     private var currencyCode: String {
         Locale.autoupdatingCurrent.currency?.identifier ?? "JPY"
+    }
+
+    private struct ExpenseSummary: Identifiable {
+        let category: ExpenseCategory
+        let amount: Int
+
+        var id: ExpenseCategory { category }
     }
 }

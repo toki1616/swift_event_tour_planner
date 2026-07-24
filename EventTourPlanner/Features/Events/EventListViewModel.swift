@@ -23,7 +23,12 @@ final class EventListViewModel {
     }
 
     @discardableResult
-    func addEvent(title: String, venue: String, startDate: Date) -> Bool {
+    func addEvent(
+        title: String,
+        venue: String,
+        startDate: Date,
+        budget: Int
+    ) -> Bool {
         guard let input = validatedInput(
             title: title,
             venue: venue,
@@ -35,7 +40,8 @@ final class EventListViewModel {
                 LiveEvent(
                     title: input.title,
                     venue: input.venue,
-                    startDate: input.startDate
+                    startDate: input.startDate,
+                    budget: max(budget, 0)
                 )
             )
             loadEvents()
@@ -51,7 +57,8 @@ final class EventListViewModel {
         _ event: LiveEvent,
         title: String,
         venue: String,
-        startDate: Date
+        startDate: Date,
+        budget: Int
     ) -> Bool {
         guard let input = validatedInput(
             title: title,
@@ -62,12 +69,14 @@ final class EventListViewModel {
         let previousValues = (
             title: event.title,
             venue: event.venue,
-            startDate: event.startDate
+            startDate: event.startDate,
+            budget: event.budget
         )
 
         event.title = input.title
         event.venue = input.venue
         event.startDate = input.startDate
+        event.budget = max(budget, 0)
 
         do {
             try repository.update(event)
@@ -77,6 +86,7 @@ final class EventListViewModel {
             event.title = previousValues.title
             event.venue = previousValues.venue
             event.startDate = previousValues.startDate
+            event.budget = previousValues.budget
             errorMessage = error.localizedDescription
             return false
         }
@@ -92,7 +102,12 @@ final class EventListViewModel {
     }
 
     @discardableResult
-    func addExpense(name: String, amount: Int, to event: LiveEvent) -> Bool {
+    func addExpense(
+        name: String,
+        amount: Int,
+        category: ExpenseCategory,
+        to event: LiveEvent
+    ) -> Bool {
         let normalizedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !normalizedName.isEmpty else {
             errorMessage = String(localized: "validation.expense_name_required")
@@ -105,7 +120,11 @@ final class EventListViewModel {
 
         do {
             try repository.addExpense(
-                EventExpense(name: normalizedName, amount: amount),
+                EventExpense(
+                    name: normalizedName,
+                    amount: amount,
+                    category: category
+                ),
                 to: event
             )
             loadEvents()
