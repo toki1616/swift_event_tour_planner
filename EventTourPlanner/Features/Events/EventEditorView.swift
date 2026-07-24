@@ -9,6 +9,7 @@ struct EventEditorView: View {
 
     @State private var title: String
     @State private var venue: String
+    @State private var eventType: EventType
     @State private var meetupDate: Date
     @State private var doorsOpenDate: Date
     @State private var startDate: Date
@@ -18,6 +19,9 @@ struct EventEditorView: View {
     @State private var expenseAmount: Int?
     @State private var expenseCategory = ExpenseCategory.ticket
     @State private var editingExpense: EventExpense?
+    @State private var isMeetupDateCustomized: Bool
+    @State private var isDoorsOpenDateCustomized: Bool
+    @State private var isScheduledEndDateCustomized: Bool
     @FocusState private var focusedField: Field?
 
     private enum Field {
@@ -35,23 +39,31 @@ struct EventEditorView: View {
         self.viewModel = viewModel
         self.event = event
         let startDate = event?.startDate ?? Date()
+        let eventType = event?.eventType ?? .live
+        let defaultMeetupDate = eventType.defaultMeetupDate(for: startDate)
+        let defaultDoorsOpenDate = eventType.defaultDoorsOpenDate(for: startDate)
+        let defaultScheduledEndDate = eventType.defaultScheduledEndDate(for: startDate)
         _title = State(initialValue: event?.title ?? "")
         _venue = State(initialValue: event?.venue ?? "")
+        _eventType = State(initialValue: eventType)
         _meetupDate = State(
-            initialValue: event?.meetupDate
-                ?? Calendar.autoupdatingCurrent.date(byAdding: .hour, value: -2, to: startDate)
-                ?? startDate
+            initialValue: event?.meetupDate ?? defaultMeetupDate
         )
         _doorsOpenDate = State(
-            initialValue: event?.doorsOpenDate
-                ?? Calendar.autoupdatingCurrent.date(byAdding: .hour, value: -1, to: startDate)
-                ?? startDate
+            initialValue: event?.doorsOpenDate ?? defaultDoorsOpenDate
         )
         _startDate = State(initialValue: startDate)
         _scheduledEndDate = State(
-            initialValue: event?.scheduledEndDate
-                ?? Calendar.autoupdatingCurrent.date(byAdding: .hour, value: 2, to: startDate)
-                ?? startDate
+            initialValue: event?.scheduledEndDate ?? defaultScheduledEndDate
+        )
+        _isMeetupDateCustomized = State(
+            initialValue: event?.meetupDate.map { $0 != defaultMeetupDate } ?? false
+        )
+        _isDoorsOpenDateCustomized = State(
+            initialValue: event?.doorsOpenDate.map { $0 != defaultDoorsOpenDate } ?? false
+        )
+        _isScheduledEndDateCustomized = State(
+            initialValue: event?.scheduledEndDate.map { $0 != defaultScheduledEndDate } ?? false
         )
         _budget = State(initialValue: event.map(\.budget))
     }
@@ -66,13 +78,23 @@ struct EventEditorView: View {
                     TextField("会場", text: $venue)
                         .focused($focusedField, equals: .venue)
                         .submitLabel(.done)
+                    Picker("種類", selection: $eventType) {
+                        ForEach(EventType.allCases) { eventType in
+                            Text(eventType.title)
+                                .tag(eventType)
+                        }
+                    }
                 }
 
                 Section("時間") {
-                    eventDatePicker("集合時間", selection: $meetupDate)
-                    eventDatePicker("開場時間", selection: $doorsOpenDate)
-                    eventDatePicker("開演時間", selection: $startDate)
-                    eventDatePicker("終演予定時間", selection: $scheduledEndDate)
+                    eventDatePicker("集合時間", selection: meetupDateBinding)
+                    eventDatePicker("開場時間", selection: doorsOpenDateBinding)
+                    eventDatePicker("開演時間", selection: startDateBinding)
+                    eventDatePicker("終演予定時間", selection: scheduledEndDateBinding)
+
+                    Button("標準時間に戻す") {
+                        applyDefaultSchedule()
+                    }
                 }
 
                 budgetSection
@@ -126,6 +148,7 @@ struct EventEditorView: View {
                 event,
                 title: title,
                 venue: venue,
+                eventType: eventType,
                 meetupDate: meetupDate,
                 doorsOpenDate: doorsOpenDate,
                 startDate: startDate,
@@ -136,6 +159,7 @@ struct EventEditorView: View {
             return viewModel.addEvent(
                 title: title,
                 venue: venue,
+                eventType: eventType,
                 meetupDate: meetupDate,
                 doorsOpenDate: doorsOpenDate,
                 startDate: startDate,
@@ -143,6 +167,65 @@ struct EventEditorView: View {
                 budget: budget ?? 0
             )
         }
+    }
+
+    private var meetupDateBinding: Binding<Date> {
+        Binding(
+            get: { meetupDate },
+            set: {
+                meetupDate = $0
+                isMeetupDateCustomized = true
+            }
+        )
+    }
+
+    private var doorsOpenDateBinding: Binding<Date> {
+        Binding(
+            get: { doorsOpenDate },
+            set: {
+                doorsOpenDate = $0
+                isDoorsOpenDateCustomized = true
+            }
+        )
+    }
+
+    private var startDateBinding: Binding<Date> {
+        Binding(
+            get: { startDate },
+            set: { newStartDate in
+                startDate = newStartDate
+                applyAutomaticSchedule()
+            }
+        )
+    }
+
+    private var scheduledEndDateBinding: Binding<Date> {
+        Binding(
+            get: { scheduledEndDate },
+            set: {
+                scheduledEndDate = $0
+                isScheduledEndDateCustomized = true
+            }
+        )
+    }
+
+    private func applyAutomaticSchedule() {
+        if !isMeetupDateCustomized {
+            meetupDate = eventType.defaultMeetupDate(for: startDate)
+        }
+        if !isDoorsOpenDateCustomized {
+            doorsOpenDate = eventType.defaultDoorsOpenDate(for: startDate)
+        }
+        if !isScheduledEndDateCustomized {
+            scheduledEndDate = eventType.defaultScheduledEndDate(for: startDate)
+        }
+    }
+
+    private func applyDefaultSchedule() {
+        isMeetupDateCustomized = false
+        isDoorsOpenDateCustomized = false
+        isScheduledEndDateCustomized = false
+        applyAutomaticSchedule()
     }
 
     private func eventDatePicker(

@@ -27,6 +27,22 @@
         }
       }
     },
+    "event.type.live" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Live"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ライブ"
+          }
+        }
+      }
+    },
     "expense.category.accommodation" : {
       "localizations" : {
         "en" : {
@@ -372,6 +388,16 @@
         }
       }
     },
+    "種類" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type"
+          }
+        }
+      }
+    },
     "時間" : {
       "localizations" : {
         "en" : {
@@ -474,6 +500,7 @@
       }
     },
     "開場" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -520,6 +547,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Start Time"
+          }
+        }
+      }
+    },
+    "標準時間に戻す" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset to Default Times"
           }
         }
       }

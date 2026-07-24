@@ -26,6 +26,7 @@ final class EventListViewModel {
     func addEvent(
         title: String,
         venue: String,
+        eventType: EventType,
         meetupDate: Date,
         doorsOpenDate: Date,
         startDate: Date,
@@ -43,6 +44,7 @@ final class EventListViewModel {
                 LiveEvent(
                     title: input.title,
                     venue: input.venue,
+                    eventType: eventType,
                     meetupDate: meetupDate,
                     doorsOpenDate: doorsOpenDate,
                     startDate: input.startDate,
@@ -63,6 +65,7 @@ final class EventListViewModel {
         _ event: LiveEvent,
         title: String,
         venue: String,
+        eventType: EventType,
         meetupDate: Date,
         doorsOpenDate: Date,
         startDate: Date,
@@ -78,6 +81,7 @@ final class EventListViewModel {
         let previousValues = (
             title: event.title,
             venue: event.venue,
+            eventType: event.eventType,
             meetupDate: event.meetupDate,
             doorsOpenDate: event.doorsOpenDate,
             startDate: event.startDate,
@@ -87,6 +91,7 @@ final class EventListViewModel {
 
         event.title = input.title
         event.venue = input.venue
+        event.eventType = eventType
         event.meetupDate = meetupDate
         event.doorsOpenDate = doorsOpenDate
         event.startDate = input.startDate
@@ -100,6 +105,7 @@ final class EventListViewModel {
         } catch {
             event.title = previousValues.title
             event.venue = previousValues.venue
+            event.eventType = previousValues.eventType
             event.meetupDate = previousValues.meetupDate
             event.doorsOpenDate = previousValues.doorsOpenDate
             event.startDate = previousValues.startDate
