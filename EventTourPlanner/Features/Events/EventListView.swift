@@ -141,10 +141,13 @@ struct EventListView: View {
 
     private func eventRow(_ event: LiveEvent) -> some View {
         HStack(alignment: .top, spacing: 16) {
-            Text(event.startDate, format: .dateTime.hour().minute())
-                .font(.headline.monospacedDigit())
-                .frame(minWidth: 56, alignment: .leading)
-                .foregroundStyle(.primary)
+            VStack(alignment: .leading, spacing: 3) {
+                if let doorsOpenDate = event.doorsOpenDate {
+                    timeLabel("開場", date: doorsOpenDate)
+                }
+                timeLabel("開演", date: event.startDate)
+            }
+            .frame(minWidth: 76, alignment: .leading)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(event.title)
@@ -182,6 +185,17 @@ struct EventListView: View {
             }
         }
         .padding(.vertical, 4)
+    }
+
+    private func timeLabel(_ title: LocalizedStringKey, date: Date) -> some View {
+        VStack(alignment: .leading, spacing: 1) {
+            Text(title)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            Text(date, format: .dateTime.hour().minute())
+                .font(.subheadline.monospacedDigit())
+                .foregroundStyle(.primary)
+        }
     }
 
     private var currencyCode: String {

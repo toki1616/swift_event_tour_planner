@@ -26,7 +26,10 @@ final class EventListViewModel {
     func addEvent(
         title: String,
         venue: String,
+        meetupDate: Date,
+        doorsOpenDate: Date,
         startDate: Date,
+        scheduledEndDate: Date,
         budget: Int
     ) -> Bool {
         guard let input = validatedInput(
@@ -40,7 +43,10 @@ final class EventListViewModel {
                 LiveEvent(
                     title: input.title,
                     venue: input.venue,
+                    meetupDate: meetupDate,
+                    doorsOpenDate: doorsOpenDate,
                     startDate: input.startDate,
+                    scheduledEndDate: scheduledEndDate,
                     budget: max(budget, 0)
                 )
             )
@@ -57,7 +63,10 @@ final class EventListViewModel {
         _ event: LiveEvent,
         title: String,
         venue: String,
+        meetupDate: Date,
+        doorsOpenDate: Date,
         startDate: Date,
+        scheduledEndDate: Date,
         budget: Int
     ) -> Bool {
         guard let input = validatedInput(
@@ -69,13 +78,19 @@ final class EventListViewModel {
         let previousValues = (
             title: event.title,
             venue: event.venue,
+            meetupDate: event.meetupDate,
+            doorsOpenDate: event.doorsOpenDate,
             startDate: event.startDate,
+            scheduledEndDate: event.scheduledEndDate,
             budget: event.budget
         )
 
         event.title = input.title
         event.venue = input.venue
+        event.meetupDate = meetupDate
+        event.doorsOpenDate = doorsOpenDate
         event.startDate = input.startDate
+        event.scheduledEndDate = scheduledEndDate
         event.budget = max(budget, 0)
 
         do {
@@ -85,7 +100,10 @@ final class EventListViewModel {
         } catch {
             event.title = previousValues.title
             event.venue = previousValues.venue
+            event.meetupDate = previousValues.meetupDate
+            event.doorsOpenDate = previousValues.doorsOpenDate
             event.startDate = previousValues.startDate
+            event.scheduledEndDate = previousValues.scheduledEndDate
             event.budget = previousValues.budget
             errorMessage = error.localizedDescription
             return false

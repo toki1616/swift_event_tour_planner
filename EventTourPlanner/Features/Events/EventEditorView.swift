@@ -9,7 +9,10 @@ struct EventEditorView: View {
 
     @State private var title: String
     @State private var venue: String
+    @State private var meetupDate: Date
+    @State private var doorsOpenDate: Date
     @State private var startDate: Date
+    @State private var scheduledEndDate: Date
     @State private var budget: Int?
     @State private var expenseName = ""
     @State private var expenseAmount: Int?
@@ -31,9 +34,25 @@ struct EventEditorView: View {
     ) {
         self.viewModel = viewModel
         self.event = event
+        let startDate = event?.startDate ?? Date()
         _title = State(initialValue: event?.title ?? "")
         _venue = State(initialValue: event?.venue ?? "")
-        _startDate = State(initialValue: event?.startDate ?? Date())
+        _meetupDate = State(
+            initialValue: event?.meetupDate
+                ?? Calendar.autoupdatingCurrent.date(byAdding: .hour, value: -2, to: startDate)
+                ?? startDate
+        )
+        _doorsOpenDate = State(
+            initialValue: event?.doorsOpenDate
+                ?? Calendar.autoupdatingCurrent.date(byAdding: .hour, value: -1, to: startDate)
+                ?? startDate
+        )
+        _startDate = State(initialValue: startDate)
+        _scheduledEndDate = State(
+            initialValue: event?.scheduledEndDate
+                ?? Calendar.autoupdatingCurrent.date(byAdding: .hour, value: 2, to: startDate)
+                ?? startDate
+        )
         _budget = State(initialValue: event.map(\.budget))
     }
 
@@ -47,11 +66,13 @@ struct EventEditorView: View {
                     TextField("会場", text: $venue)
                         .focused($focusedField, equals: .venue)
                         .submitLabel(.done)
-                    DatePicker(
-                        "開演日時",
-                        selection: $startDate,
-                        displayedComponents: [.date, .hourAndMinute]
-                    )
+                }
+
+                Section("時間") {
+                    eventDatePicker("集合時間", selection: $meetupDate)
+                    eventDatePicker("開場時間", selection: $doorsOpenDate)
+                    eventDatePicker("開演時間", selection: $startDate)
+                    eventDatePicker("終演予定時間", selection: $scheduledEndDate)
                 }
 
                 budgetSection
@@ -105,17 +126,34 @@ struct EventEditorView: View {
                 event,
                 title: title,
                 venue: venue,
+                meetupDate: meetupDate,
+                doorsOpenDate: doorsOpenDate,
                 startDate: startDate,
+                scheduledEndDate: scheduledEndDate,
                 budget: budget ?? 0
             )
         } else {
             return viewModel.addEvent(
                 title: title,
                 venue: venue,
+                meetupDate: meetupDate,
+                doorsOpenDate: doorsOpenDate,
                 startDate: startDate,
+                scheduledEndDate: scheduledEndDate,
                 budget: budget ?? 0
             )
         }
+    }
+
+    private func eventDatePicker(
+        _ title: LocalizedStringKey,
+        selection: Binding<Date>
+    ) -> some View {
+        DatePicker(
+            title,
+            selection: selection,
+            displayedComponents: [.date, .hourAndMinute]
+        )
     }
 
     private func expenseSection(for event: LiveEvent) -> some View {
