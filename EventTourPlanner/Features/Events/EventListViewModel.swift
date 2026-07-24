@@ -24,18 +24,18 @@ final class EventListViewModel {
 
     @discardableResult
     func addEvent(title: String, venue: String, startDate: Date) -> Bool {
-        let normalizedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !normalizedTitle.isEmpty else {
-            errorMessage = "イベント名を入力してください。"
-            return false
-        }
+        guard let input = validatedInput(
+            title: title,
+            venue: venue,
+            startDate: startDate
+        ) else { return false }
 
         do {
             try repository.add(
                 LiveEvent(
-                    title: normalizedTitle,
-                    venue: venue.trimmingCharacters(in: .whitespacesAndNewlines),
-                    startDate: startDate
+                    title: input.title,
+                    venue: input.venue,
+                    startDate: input.startDate
                 )
             )
             loadEvents()
@@ -44,5 +44,68 @@ final class EventListViewModel {
             errorMessage = error.localizedDescription
             return false
         }
+    }
+
+    @discardableResult
+    func updateEvent(
+        _ event: LiveEvent,
+        title: String,
+        venue: String,
+        startDate: Date
+    ) -> Bool {
+        guard let input = validatedInput(
+            title: title,
+            venue: venue,
+            startDate: startDate
+        ) else { return false }
+
+        let previousValues = (
+            title: event.title,
+            venue: event.venue,
+            startDate: event.startDate
+        )
+
+        event.title = input.title
+        event.venue = input.venue
+        event.startDate = input.startDate
+
+        do {
+            try repository.update(event)
+            loadEvents()
+            return true
+        } catch {
+            event.title = previousValues.title
+            event.venue = previousValues.venue
+            event.startDate = previousValues.startDate
+            errorMessage = error.localizedDescription
+            return false
+        }
+    }
+
+    func deleteEvent(_ event: LiveEvent) {
+        do {
+            try repository.delete(event)
+            loadEvents()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func validatedInput(
+        title: String,
+        venue: String,
+        startDate: Date
+    ) -> (title: String, venue: String, startDate: Date)? {
+        let normalizedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalizedTitle.isEmpty else {
+            errorMessage = "イベント名を入力してください。"
+            return nil
+        }
+
+        return (
+            normalizedTitle,
+            venue.trimmingCharacters(in: .whitespacesAndNewlines),
+            startDate
+        )
     }
 }

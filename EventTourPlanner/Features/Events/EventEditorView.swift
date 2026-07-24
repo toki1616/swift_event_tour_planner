@@ -4,10 +4,22 @@ struct EventEditorView: View {
     @Environment(\.dismiss) private var dismiss
 
     let viewModel: EventListViewModel
+    let event: LiveEvent?
 
-    @State private var title = ""
-    @State private var venue = ""
-    @State private var startDate = Date()
+    @State private var title: String
+    @State private var venue: String
+    @State private var startDate: Date
+
+    init(
+        viewModel: EventListViewModel,
+        event: LiveEvent? = nil
+    ) {
+        self.viewModel = viewModel
+        self.event = event
+        _title = State(initialValue: event?.title ?? "")
+        _venue = State(initialValue: event?.venue ?? "")
+        _startDate = State(initialValue: event?.startDate ?? Date())
+    }
 
     var body: some View {
         NavigationStack {
@@ -22,7 +34,7 @@ struct EventEditorView: View {
                     )
                 }
             }
-            .navigationTitle("イベントを登録")
+            .navigationTitle(event == nil ? "イベントを登録" : "イベントを編集")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -33,17 +45,30 @@ struct EventEditorView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("保存") {
-                        if viewModel.addEvent(
-                            title: title,
-                            venue: venue,
-                            startDate: startDate
-                        ) {
+                        if save() {
                             dismiss()
                         }
                     }
                     .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
+        }
+    }
+
+    private func save() -> Bool {
+        if let event {
+            return viewModel.updateEvent(
+                event,
+                title: title,
+                venue: venue,
+                startDate: startDate
+            )
+        } else {
+            return viewModel.addEvent(
+                title: title,
+                venue: venue,
+                startDate: startDate
+            )
         }
     }
 }

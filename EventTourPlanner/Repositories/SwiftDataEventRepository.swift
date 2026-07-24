@@ -21,6 +21,10 @@ final class SwiftDataEventRepository: EventRepository {
         try modelContext.save()
     }
 
+    func update(_ event: LiveEvent) throws {
+        try modelContext.save()
+    }
+
     func delete(_ event: LiveEvent) throws {
         modelContext.delete(event)
         try modelContext.save()
