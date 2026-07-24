@@ -19,7 +19,6 @@ struct EventEditorView: View {
     @State private var budget: Int?
     @State private var expenseDrafts: [ExpenseDraft] = []
     @State private var isShowingExpenseEditor = false
-    @State private var editingExpense: EventExpense?
     @State private var editingExpenseDraft: ExpenseDraft?
     @State private var isMeetupDateCustomized: Bool
     @State private var isDoorsOpenDateCustomized: Bool
@@ -70,6 +69,17 @@ struct EventEditorView: View {
             initialValue: event?.scheduledEndDate.map { $0 != defaultScheduledEndDate } ?? false
         )
         _budget = State(initialValue: event.map(\.budget))
+        _expenseDrafts = State(
+            initialValue: event?.expenses.map {
+                ExpenseDraft(
+                    name: $0.name,
+                    amount: $0.amount,
+                    category: $0.category,
+                    createdAt: $0.createdAt
+                )
+            }
+            .sorted { $0.createdAt < $1.createdAt } ?? []
+        )
     }
 
     var body: some View {
@@ -116,7 +126,7 @@ struct EventEditorView: View {
 
                 budgetSection
 
-                expenseSection(for: event)
+                expenseSection
             }
             .navigationTitle(event == nil ? "イベントを登録" : "イベントを編集")
             .navigationBarTitleDisplayMode(.inline)
@@ -140,40 +150,15 @@ struct EventEditorView: View {
             .keyboardDoneButton(focusedField: $focusedField)
             .sheet(isPresented: $isShowingExpenseEditor) {
                 ExpenseEditorView { name, amount, category in
-                    if let event {
-                        return viewModel.addExpense(
-                            name: name,
-                            amount: amount,
-                            category: category,
-                            to: event
-                        )
-                    } else {
-                        expenseDrafts.append(
-                            ExpenseDraft(
-                                name: name.trimmingCharacters(in: .whitespacesAndNewlines),
-                                amount: amount,
-                                category: category
-                            )
-                        )
-                        return true
-                    }
-                }
-            }
-            .sheet(item: $editingExpense) { expense in
-                ExpenseEditorView(
-                    expense: expense,
-                    onSave: { name, amount, category in
-                        viewModel.updateExpense(
-                            expense,
-                            name: name,
+                    expenseDrafts.append(
+                        ExpenseDraft(
+                            name: name.trimmingCharacters(in: .whitespacesAndNewlines),
                             amount: amount,
                             category: category
                         )
-                    },
-                    onDelete: {
-                        viewModel.deleteExpense(expense)
-                    }
-                )
+                    )
+                    return true
+                }
             }
             .sheet(item: $editingExpenseDraft) { draft in
                 ExpenseEditorView(
@@ -194,6 +179,23 @@ struct EventEditorView: View {
                     }
                 )
             }
+            .alert(
+                "保存できません",
+                isPresented: Binding(
+                    get: { viewModel.errorMessage != nil },
+                    set: { isPresented in
+                        if !isPresented {
+                            viewModel.clearError()
+                        }
+                    }
+                )
+            ) {
+                Button("OK") {
+                    viewModel.clearError()
+                }
+            } message: {
+                Text(viewModel.errorMessage ?? "")
+            }
         }
     }
 
@@ -210,7 +212,8 @@ struct EventEditorView: View {
                 doorsOpenDate: doorsOpenDate,
                 startDate: startDate,
                 scheduledEndDate: scheduledEndDate,
-                budget: budget ?? 0
+                budget: budget ?? 0,
+                expenses: expenseDrafts
             )
         } else {
             return viewModel.addEvent(
@@ -326,50 +329,29 @@ struct EventEditorView: View {
         )
     }
 
-    private func expenseSection(for event: LiveEvent?) -> some View {
+    private var expenseSection: some View {
         Section {
-            if let event, !event.expenses.isEmpty {
-                expenseChart(for: event)
+            if !expenseDrafts.isEmpty {
+                expenseChart
                     .frame(height: 220)
                     .listRowInsets(EdgeInsets())
                     .padding()
             }
 
-            if let event {
-                ForEach(sortedExpenses(for: event)) { expense in
-                    Button {
-                        editingExpense = expense
-                    } label: {
-                        expenseRow(
-                            name: expense.name,
-                            amount: expense.amount,
-                            category: expense.category
-                        )
-                    }
-                    .buttonStyle(.plain)
+            ForEach(expenseDrafts) { draft in
+                Button {
+                    editingExpenseDraft = draft
+                } label: {
+                    expenseRow(
+                        name: draft.name,
+                        amount: draft.amount,
+                        category: draft.category
+                    )
                 }
-                .onDelete { offsets in
-                    let expenses = sortedExpenses(for: event)
-                    for index in offsets {
-                        viewModel.deleteExpense(expenses[index])
-                    }
-                }
-            } else {
-                ForEach(expenseDrafts) { draft in
-                    Button {
-                        editingExpenseDraft = draft
-                    } label: {
-                        expenseRow(
-                            name: draft.name,
-                            amount: draft.amount,
-                            category: draft.category
-                        )
-                    }
-                    .buttonStyle(.plain)
-                }
-                .onDelete { offsets in
-                    expenseDrafts.remove(atOffsets: offsets)
-                }
+                .buttonStyle(.plain)
+            }
+            .onDelete { offsets in
+                expenseDrafts.remove(atOffsets: offsets)
             }
 
             Button {
@@ -384,7 +366,7 @@ struct EventEditorView: View {
                 Text("合計")
                 Spacer()
                 Text(
-                    event?.totalExpense ?? expenseDrafts.reduce(0) { $0 + $1.amount },
+                    draftTotalExpense,
                     format: .currency(code: currencyCode)
                 )
                     .fontWeight(.semibold)
@@ -416,43 +398,39 @@ struct EventEditorView: View {
         }
     }
 
-    private func sortedExpenses(for event: LiveEvent) -> [EventExpense] {
-        event.expenses.sorted { $0.createdAt < $1.createdAt }
-    }
-
     private var budgetSection: some View {
         Section("予算") {
             TextField("予算額", value: $budget, format: .number)
                 .keyboardType(.numberPad)
                 .focused($focusedField, equals: .budget)
 
-            if let event, (budget ?? 0) > 0 {
+            if (budget ?? 0) > 0 {
                 LabeledContent("支出済み") {
-                    Text(event.totalExpense, format: .currency(code: currencyCode))
+                    Text(draftTotalExpense, format: .currency(code: currencyCode))
                         .monospacedDigit()
                 }
 
                 LabeledContent("残額") {
                     Text(
-                        (budget ?? 0) - event.totalExpense,
+                        (budget ?? 0) - draftTotalExpense,
                         format: .currency(code: currencyCode)
                     )
                     .monospacedDigit()
-                    .foregroundStyle(event.totalExpense > (budget ?? 0) ? .red : .primary)
+                    .foregroundStyle(draftTotalExpense > (budget ?? 0) ? .red : .primary)
                 }
 
-                ProgressView(value: usageRate(for: event))
-                    .tint(event.totalExpense > (budget ?? 0) ? .red : .accentColor)
+                ProgressView(value: usageRate)
+                    .tint(draftTotalExpense > (budget ?? 0) ? .red : .accentColor)
 
-                Text(usageRate(for: event), format: .percent.precision(.fractionLength(0)))
+                Text(usageRate, format: .percent.precision(.fractionLength(0)))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
         }
     }
 
-    private func expenseChart(for event: LiveEvent) -> some View {
-        Chart(expenseSummaries(for: event)) { summary in
+    private var expenseChart: some View {
+        Chart(expenseSummaries) { summary in
             SectorMark(
                 angle: .value("金額", summary.amount),
                 innerRadius: .ratio(0.58),
@@ -464,8 +442,8 @@ struct EventEditorView: View {
         .accessibilityLabel("費用の内訳")
     }
 
-    private func expenseSummaries(for event: LiveEvent) -> [ExpenseSummary] {
-        Dictionary(grouping: event.expenses, by: \.category)
+    private var expenseSummaries: [ExpenseSummary] {
+        Dictionary(grouping: expenseDrafts, by: \.category)
             .map { category, expenses in
                 ExpenseSummary(
                     category: category,
@@ -475,9 +453,13 @@ struct EventEditorView: View {
             .sorted { $0.category.rawValue < $1.category.rawValue }
     }
 
-    private func usageRate(for event: LiveEvent) -> Double {
+    private var usageRate: Double {
         guard (budget ?? 0) > 0 else { return 0 }
-        return Double(event.totalExpense) / Double(budget ?? 0)
+        return Double(draftTotalExpense) / Double(budget ?? 0)
+    }
+
+    private var draftTotalExpense: Int {
+        expenseDrafts.reduce(0) { $0 + $1.amount }
     }
 
     private var currencyCode: String {

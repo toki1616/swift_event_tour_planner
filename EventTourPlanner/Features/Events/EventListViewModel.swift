@@ -39,15 +39,20 @@ final class EventListViewModel {
         guard let input = validatedInput(
             title: title,
             venue: venue,
-            startDate: startDate
+            websiteURL: websiteURL,
+            electronicTicketURL: electronicTicketURL,
+            meetupDate: meetupDate,
+            doorsOpenDate: doorsOpenDate,
+            startDate: startDate,
+            scheduledEndDate: scheduledEndDate
         ) else { return false }
 
         do {
             let event = LiveEvent(
                 title: input.title,
                 venue: input.venue,
-                websiteURL: websiteURL.trimmingCharacters(in: .whitespacesAndNewlines),
-                electronicTicketURL: electronicTicketURL.trimmingCharacters(in: .whitespacesAndNewlines),
+                websiteURL: input.websiteURL,
+                electronicTicketURL: input.electronicTicketURL,
                 eventType: eventType,
                 meetupDate: meetupDate,
                 doorsOpenDate: doorsOpenDate,
@@ -60,6 +65,7 @@ final class EventListViewModel {
                     name: draft.name,
                     amount: draft.amount,
                     category: draft.category,
+                    createdAt: draft.createdAt,
                     event: event
                 )
             }
@@ -84,12 +90,18 @@ final class EventListViewModel {
         doorsOpenDate: Date,
         startDate: Date,
         scheduledEndDate: Date,
-        budget: Int
+        budget: Int,
+        expenses: [ExpenseDraft]
     ) -> Bool {
         guard let input = validatedInput(
             title: title,
             venue: venue,
-            startDate: startDate
+            websiteURL: websiteURL,
+            electronicTicketURL: electronicTicketURL,
+            meetupDate: meetupDate,
+            doorsOpenDate: doorsOpenDate,
+            startDate: startDate,
+            scheduledEndDate: scheduledEndDate
         ) else { return false }
 
         let previousValues = (
@@ -107,8 +119,8 @@ final class EventListViewModel {
 
         event.title = input.title
         event.venue = input.venue
-        event.websiteURL = websiteURL.trimmingCharacters(in: .whitespacesAndNewlines)
-        event.electronicTicketURL = electronicTicketURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        event.websiteURL = input.websiteURL
+        event.electronicTicketURL = input.electronicTicketURL
         event.eventType = eventType
         event.meetupDate = meetupDate
         event.doorsOpenDate = doorsOpenDate
@@ -117,7 +129,16 @@ final class EventListViewModel {
         event.budget = max(budget, 0)
 
         do {
-            try repository.update(event)
+            let replacementExpenses = expenses.map { draft in
+                EventExpense(
+                    name: draft.name,
+                    amount: draft.amount,
+                    category: draft.category,
+                    createdAt: draft.createdAt,
+                    event: event
+                )
+            }
+            try repository.update(event, replacingExpenses: replacementExpenses)
             loadEvents()
             return true
         } catch {
@@ -145,95 +166,70 @@ final class EventListViewModel {
         }
     }
 
-    @discardableResult
-    func addExpense(
-        name: String,
-        amount: Int,
-        category: ExpenseCategory,
-        to event: LiveEvent
-    ) -> Bool {
-        let normalizedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard amount > 0 else {
-            errorMessage = String(localized: "validation.expense_amount_positive")
-            return false
-        }
-
-        do {
-            try repository.addExpense(
-                EventExpense(
-                    name: normalizedName,
-                    amount: amount,
-                    category: category
-                ),
-                to: event
-            )
-            loadEvents()
-            return true
-        } catch {
-            errorMessage = error.localizedDescription
-            return false
-        }
-    }
-
-    @discardableResult
-    func updateExpense(
-        _ expense: EventExpense,
-        name: String,
-        amount: Int,
-        category: ExpenseCategory
-    ) -> Bool {
-        guard amount > 0 else {
-            errorMessage = String(localized: "validation.expense_amount_positive")
-            return false
-        }
-
-        let previousValues = (
-            name: expense.name,
-            amount: expense.amount,
-            category: expense.category
-        )
-
-        expense.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        expense.amount = amount
-        expense.category = category
-
-        do {
-            try repository.updateExpense(expense)
-            loadEvents()
-            return true
-        } catch {
-            expense.name = previousValues.name
-            expense.amount = previousValues.amount
-            expense.category = previousValues.category
-            errorMessage = error.localizedDescription
-            return false
-        }
-    }
-
-    func deleteExpense(_ expense: EventExpense) {
-        do {
-            try repository.deleteExpense(expense)
-            loadEvents()
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-    }
-
     private func validatedInput(
         title: String,
         venue: String,
+        websiteURL: String,
+        electronicTicketURL: String,
+        meetupDate: Date,
+        doorsOpenDate: Date,
+        startDate: Date,
+        scheduledEndDate: Date
+    ) -> (
+        title: String,
+        venue: String,
+        websiteURL: String,
+        electronicTicketURL: String,
         startDate: Date
-    ) -> (title: String, venue: String, startDate: Date)? {
+    )? {
         let normalizedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !normalizedTitle.isEmpty else {
             errorMessage = String(localized: "validation.event_name_required")
             return nil
         }
 
+        guard
+            meetupDate <= doorsOpenDate,
+            doorsOpenDate <= startDate,
+            startDate <= scheduledEndDate
+        else {
+            errorMessage = "集合時間、開場時間、開演時間、終演予定時間の順に設定してください。"
+            return nil
+        }
+
+        let normalizedWebsiteURL = websiteURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalizedElectronicTicketURL = electronicTicketURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard normalizedWebsiteURL.isEmpty || normalizedURL(from: normalizedWebsiteURL) != nil else {
+            errorMessage = "サイトURLを正しく入力してください。"
+            return nil
+        }
+        guard normalizedElectronicTicketURL.isEmpty || normalizedURL(from: normalizedElectronicTicketURL) != nil else {
+            errorMessage = "電子チケットURLを正しく入力してください。"
+            return nil
+        }
+
         return (
             normalizedTitle,
             venue.trimmingCharacters(in: .whitespacesAndNewlines),
+            normalizedWebsiteURL,
+            normalizedElectronicTicketURL,
             startDate
         )
+    }
+
+    func clearError() {
+        errorMessage = nil
+    }
+
+    private func normalizedURL(from input: String) -> URL? {
+        let urlString = input.contains("://") ? input : "https://\(input)"
+        guard
+            let components = URLComponents(string: urlString),
+            ["http", "https"].contains(components.scheme?.lowercased() ?? ""),
+            components.host?.contains(".") == true
+        else {
+            return nil
+        }
+        return components.url
     }
 }

@@ -4,9 +4,6 @@ import Foundation
 protocol EventRepository {
     func fetchEvents() throws -> [LiveEvent]
     func add(_ event: LiveEvent) throws
-    func update(_ event: LiveEvent) throws
+    func update(_ event: LiveEvent, replacingExpenses expenses: [EventExpense]) throws
     func delete(_ event: LiveEvent) throws
-    func addExpense(_ expense: EventExpense, to event: LiveEvent) throws
-    func updateExpense(_ expense: EventExpense) throws
-    func deleteExpense(_ expense: EventExpense) throws
 }

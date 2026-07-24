@@ -21,27 +21,26 @@ final class SwiftDataEventRepository: EventRepository {
         try modelContext.save()
     }
 
-    func update(_ event: LiveEvent) throws {
-        try modelContext.save()
+    func update(_ event: LiveEvent, replacingExpenses expenses: [EventExpense]) throws {
+        let previousExpenses = event.expenses
+        event.expenses = expenses
+        for expense in expenses {
+            expense.event = event
+            modelContext.insert(expense)
+        }
+        for expense in previousExpenses {
+            modelContext.delete(expense)
+        }
+        do {
+            try modelContext.save()
+        } catch {
+            modelContext.rollback()
+            throw error
+        }
     }
 
     func delete(_ event: LiveEvent) throws {
         modelContext.delete(event)
-        try modelContext.save()
-    }
-
-    func addExpense(_ expense: EventExpense, to event: LiveEvent) throws {
-        expense.event = event
-        modelContext.insert(expense)
-        try modelContext.save()
-    }
-
-    func updateExpense(_ expense: EventExpense) throws {
-        try modelContext.save()
-    }
-
-    func deleteExpense(_ expense: EventExpense) throws {
-        modelContext.delete(expense)
         try modelContext.save()
     }
 }
