@@ -248,6 +248,16 @@
         }
       }
     },
+    "イベント詳細" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event Details"
+          }
+        }
+      }
+    },
     "イベント情報" : {
       "localizations" : {
         "en" : {

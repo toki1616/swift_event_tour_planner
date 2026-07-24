@@ -18,6 +18,7 @@
 		85F705033013861F00FF566F /* EventExpense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F705023013861F00FF566F /* EventExpense.swift */; };
 		85F705053013861F00FF566F /* KeyboardDismissModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F705043013861F00FF566F /* KeyboardDismissModifier.swift */; };
 		85F705083013861F00FF566F /* ExpenseEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F705073013861F00FF566F /* ExpenseEditorView.swift */; };
+		85F7050B3013861F00FF566F /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F7050A3013861F00FF566F /* EventDetailView.swift */; };
 		924EBB960D47AD5A7BC2C351 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD5D43B0C4C0E223CE7DD57 /* Foundation.framework */; };
 		E7C4AE4415F618D292A2ED9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA35EA477DE169D49ADE0E98 /* Assets.xcassets */; };
 		E80260824ABEB42E41C82411 /* EventTourPlannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */; };
@@ -37,6 +38,7 @@
 		85F705023013861F00FF566F /* EventExpense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventExpense.swift; sourceTree = "<group>"; };
 		85F705043013861F00FF566F /* KeyboardDismissModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardDismissModifier.swift; sourceTree = "<group>"; };
 		85F705073013861F00FF566F /* ExpenseEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseEditorView.swift; sourceTree = "<group>"; };
+		85F7050A3013861F00FF566F /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
 		DA35EA477DE169D49ADE0E98 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventTourPlannerApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -79,6 +81,7 @@
 		85F704E43013861F00FF566F /* Events */ = {
 			isa = PBXGroup;
 			children = (
+				85F7050A3013861F00FF566F /* EventDetailView.swift */,
 				85F704E13013861F00FF566F /* EventEditorView.swift */,
 				85F704E23013861F00FF566F /* EventListView.swift */,
 				85F704E33013861F00FF566F /* EventListViewModel.swift */,
@@ -235,6 +238,7 @@
 				85F705033013861F00FF566F /* EventExpense.swift in Sources */,
 				85F705053013861F00FF566F /* KeyboardDismissModifier.swift in Sources */,
 				85F705083013861F00FF566F /* ExpenseEditorView.swift in Sources */,
+				85F7050B3013861F00FF566F /* EventDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

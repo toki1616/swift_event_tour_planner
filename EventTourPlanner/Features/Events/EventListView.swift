@@ -20,11 +20,14 @@ struct EventListView: View {
                         ForEach(eventSections, id: \.date) { section in
                             Section {
                                 ForEach(section.events) { event in
-                                    eventRow(event)
-                                        .contentShape(Rectangle())
-                                        .onTapGesture {
-                                            editingEvent = event
-                                        }
+                                    NavigationLink {
+                                        EventDetailView(
+                                            viewModel: viewModel,
+                                            event: event
+                                        )
+                                    } label: {
+                                        eventRow(event)
+                                    }
                                         .swipeActions(edge: .trailing) {
                                             Button(role: .destructive) {
                                                 eventPendingDeletion = event
