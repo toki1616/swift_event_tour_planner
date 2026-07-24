@@ -130,7 +130,14 @@ final class EventListViewModel {
 
         do {
             let replacementExpenses = expenses.map { draft in
-                EventExpense(
+                if let expense = draft.sourceExpense {
+                    expense.name = draft.name
+                    expense.amount = draft.amount
+                    expense.category = draft.category
+                    return expense
+                }
+
+                return EventExpense(
                     name: draft.name,
                     amount: draft.amount,
                     category: draft.category,

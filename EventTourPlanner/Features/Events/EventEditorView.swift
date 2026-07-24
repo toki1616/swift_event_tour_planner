@@ -75,7 +75,8 @@ struct EventEditorView: View {
                     name: $0.name,
                     amount: $0.amount,
                     category: $0.category,
-                    createdAt: $0.createdAt
+                    createdAt: $0.createdAt,
+                    sourceExpense: $0
                 )
             }
             .sorted { $0.createdAt < $1.createdAt } ?? []

@@ -23,13 +23,17 @@ final class SwiftDataEventRepository: EventRepository {
 
     func update(_ event: LiveEvent, replacingExpenses expenses: [EventExpense]) throws {
         let previousExpenses = event.expenses
+        let deletedExpenses = previousExpenses.filter { previousExpense in
+            !expenses.contains { $0 === previousExpense }
+        }
+
+        for expense in deletedExpenses {
+            modelContext.delete(expense)
+        }
         event.expenses = expenses
-        for expense in expenses {
+        for expense in expenses where expense.modelContext == nil {
             expense.event = event
             modelContext.insert(expense)
-        }
-        for expense in previousExpenses {
-            modelContext.delete(expense)
         }
         do {
             try modelContext.save()

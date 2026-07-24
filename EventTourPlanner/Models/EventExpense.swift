@@ -40,19 +40,22 @@ struct ExpenseDraft: Identifiable {
     var amount: Int
     var category: ExpenseCategory
     var createdAt: Date
+    let sourceExpense: EventExpense?
 
     init(
         id: UUID = UUID(),
         name: String,
         amount: Int,
         category: ExpenseCategory,
-        createdAt: Date = Date()
+        createdAt: Date = Date(),
+        sourceExpense: EventExpense? = nil
     ) {
         self.id = id
         self.name = name
         self.amount = amount
         self.category = category
         self.createdAt = createdAt
+        self.sourceExpense = sourceExpense
     }
 }
 
