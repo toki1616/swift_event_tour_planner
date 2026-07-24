@@ -98,7 +98,7 @@ final class EventListViewModel {
     ) -> (title: String, venue: String, startDate: Date)? {
         let normalizedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !normalizedTitle.isEmpty else {
-            errorMessage = "イベント名を入力してください。"
+            errorMessage = String(localized: "validation.event_name_required")
             return nil
         }
 

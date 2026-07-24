@@ -14,6 +14,7 @@
 		85F704EE3013861F00FF566F /* EventListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F704E33013861F00FF566F /* EventListViewModel.swift */; };
 		85F704EF3013861F00FF566F /* EventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F704E83013861F00FF566F /* EventRepository.swift */; };
 		85F704F03013861F00FF566F /* EventListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F704E23013861F00FF566F /* EventListView.swift */; };
+		85F705013013861F00FF566F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 85F705003013861F00FF566F /* Localizable.xcstrings */; };
 		924EBB960D47AD5A7BC2C351 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD5D43B0C4C0E223CE7DD57 /* Foundation.framework */; };
 		E7C4AE4415F618D292A2ED9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA35EA477DE169D49ADE0E98 /* Assets.xcassets */; };
 		E80260824ABEB42E41C82411 /* EventTourPlannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */; };
@@ -29,6 +30,7 @@
 		85F704E63013861F00FF566F /* LiveEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveEvent.swift; sourceTree = "<group>"; };
 		85F704E83013861F00FF566F /* EventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRepository.swift; sourceTree = "<group>"; };
 		85F704E93013861F00FF566F /* SwiftDataEventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataEventRepository.swift; sourceTree = "<group>"; };
+		85F705003013861F00FF566F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		DA35EA477DE169D49ADE0E98 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventTourPlannerApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -61,6 +63,7 @@
 				85F704EA3013861F00FF566F /* Repositories */,
 				DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */,
 				61596CA5DF79FC979B45D6DD /* ContentView.swift */,
+				85F705003013861F00FF566F /* Localizable.xcstrings */,
 				DA35EA477DE169D49ADE0E98 /* Assets.xcassets */,
 			);
 			path = EventTourPlanner;
@@ -162,10 +165,11 @@
 			};
 			buildConfigurationList = DB41791BE9CF5CF4A96FB932 /* Build configuration list for PBXProject "EventTourPlanner" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = en;
+			developmentRegion = ja;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				ja,
 				Base,
 			);
 			mainGroup = E32471FAE4ADB0D57C1FC7CD;
@@ -184,6 +188,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7C4AE4415F618D292A2ED9B /* Assets.xcassets in Resources */,
+				85F705013013861F00FF566F /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

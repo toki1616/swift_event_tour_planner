@@ -1,0 +1,93 @@
+{
+  "sourceLanguage" : "ja",
+  "strings" : {
+    "イベントはありません" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "No Events" } }
+      }
+    },
+    "これから参加するイベントを追加しましょう。" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add an event you plan to attend." } }
+      }
+    },
+    "イベント" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Events" } }
+      }
+    },
+    "イベントを追加" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add Event" } }
+      }
+    },
+    "イベント情報" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Event Information" } }
+      }
+    },
+    "イベント名" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Event Name" } }
+      }
+    },
+    "会場" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Venue" } }
+      }
+    },
+    "開演日時" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Start Date and Time" } }
+      }
+    },
+    "イベントを登録" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add Event" } }
+      }
+    },
+    "イベントを編集" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Edit Event" } }
+      }
+    },
+    "キャンセル" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Cancel" } }
+      }
+    },
+    "保存" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Save" } }
+      }
+    },
+    "編集" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Edit" } }
+      }
+    },
+    "削除" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Delete" } }
+      }
+    },
+    "削除したイベントは元に戻せません。" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "A deleted event can’t be restored." } }
+      }
+    },
+    "validation.event_name_required" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Enter an event name." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "イベント名を入力してください。" } }
+      }
+    },
+    "delete.confirmation_format" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Delete “%@”?" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "「%@」を削除しますか？" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

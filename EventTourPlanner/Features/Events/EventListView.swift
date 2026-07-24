@@ -77,7 +77,7 @@ struct EventListView: View {
             EventEditorView(viewModel: viewModel, event: event)
         }
         .confirmationDialog(
-            "「\(eventPendingDeletion?.title ?? "")」を削除しますか？",
+            deleteConfirmationTitle,
             isPresented: isShowingDeleteConfirmation,
             titleVisibility: .visible
         ) {
@@ -106,4 +106,13 @@ struct EventListView: View {
             }
         )
     }
+
+    private var deleteConfirmationTitle: String {
+        String(
+            format: String(localized: "delete.confirmation_format"),
+            locale: .autoupdatingCurrent,
+            eventPendingDeletion?.title ?? ""
+        )
+    }
+
 }
