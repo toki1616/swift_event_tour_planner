@@ -105,16 +105,12 @@ struct EventEditorView: View {
                     urlInputRow(
                         title: "サイトURL（任意）",
                         text: $websiteURL,
-                        field: .websiteURL,
-                        openTitle: "サイトを開く",
-                        systemImage: "safari"
+                        field: .websiteURL
                     )
                     urlInputRow(
                         title: "電子チケットURL（任意）",
                         text: $electronicTicketURL,
-                        field: .electronicTicketURL,
-                        openTitle: "電子チケットを開く",
-                        systemImage: "ticket"
+                        field: .electronicTicketURL
                     )
                 }
 
@@ -236,48 +232,28 @@ struct EventEditorView: View {
     private func urlInputRow(
         title: LocalizedStringKey,
         text: Binding<String>,
-        field: Field,
-        openTitle: LocalizedStringKey,
-        systemImage: String
+        field: Field
     ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
-            TextField("https://example.com", text: text)
+            TextField(
+                "",
+                text: text,
+                prompt: Text("https://example.com")
+                    .foregroundStyle(Color(uiColor: .placeholderText))
+            )
                 .keyboardType(.URL)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .textContentType(.URL)
+                .foregroundStyle(.primary)
                 .focused($focusedField, equals: field)
                 .submitLabel(.done)
-
-            if let url = normalizedURL(from: text.wrappedValue) {
-                Link(destination: url) {
-                    Label(openTitle, systemImage: systemImage)
-                        .font(.subheadline)
-                }
-            }
         }
         .padding(.vertical, 2)
-    }
-
-    private func normalizedURL(from input: String) -> URL? {
-        let trimmedInput = input.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedInput.isEmpty else { return nil }
-
-        let urlString = trimmedInput.contains("://")
-            ? trimmedInput
-            : "https://\(trimmedInput)"
-        guard
-            let components = URLComponents(string: urlString),
-            ["http", "https"].contains(components.scheme?.lowercased() ?? ""),
-            components.host != nil
-        else {
-            return nil
-        }
-        return components.url
     }
 
     private var meetupDateBinding: Binding<Date> {
