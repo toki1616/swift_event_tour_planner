@@ -82,6 +82,38 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "イベント名を入力してください。" } }
       }
     },
+    "validation.expense_name_required" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Enter an expense name." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "費用名を入力してください。" } }
+      }
+    },
+    "validation.expense_amount_positive" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Enter an amount greater than zero." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "1以上の金額を入力してください。" } }
+      }
+    },
+    "費用" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Expenses" } }
+      }
+    },
+    "費用名" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Expense Name" } }
+      }
+    },
+    "金額" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Amount" } }
+      }
+    },
+    "合計" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Total" } }
+      }
+    },
     "delete.confirmation_format" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Delete “%@”?" } },

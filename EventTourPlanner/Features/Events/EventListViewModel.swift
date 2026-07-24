@@ -91,6 +91,40 @@ final class EventListViewModel {
         }
     }
 
+    @discardableResult
+    func addExpense(name: String, amount: Int, to event: LiveEvent) -> Bool {
+        let normalizedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalizedName.isEmpty else {
+            errorMessage = String(localized: "validation.expense_name_required")
+            return false
+        }
+        guard amount > 0 else {
+            errorMessage = String(localized: "validation.expense_amount_positive")
+            return false
+        }
+
+        do {
+            try repository.addExpense(
+                EventExpense(name: normalizedName, amount: amount),
+                to: event
+            )
+            loadEvents()
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
+        }
+    }
+
+    func deleteExpense(_ expense: EventExpense) {
+        do {
+            try repository.deleteExpense(expense)
+            loadEvents()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
     private func validatedInput(
         title: String,
         venue: String,

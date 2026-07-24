@@ -8,7 +8,10 @@ struct EventTourPlannerApp: App {
 
     init() {
         do {
-            let container = try ModelContainer(for: LiveEvent.self)
+            let container = try ModelContainer(
+                for: LiveEvent.self,
+                EventExpense.self
+            )
             modelContainer = container
             eventListViewModel = EventListViewModel(
                 repository: SwiftDataEventRepository(

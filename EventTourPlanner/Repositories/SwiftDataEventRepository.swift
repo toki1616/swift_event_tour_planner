@@ -29,4 +29,15 @@ final class SwiftDataEventRepository: EventRepository {
         modelContext.delete(event)
         try modelContext.save()
     }
+
+    func addExpense(_ expense: EventExpense, to event: LiveEvent) throws {
+        expense.event = event
+        modelContext.insert(expense)
+        try modelContext.save()
+    }
+
+    func deleteExpense(_ expense: EventExpense) throws {
+        modelContext.delete(expense)
+        try modelContext.save()
+    }
 }

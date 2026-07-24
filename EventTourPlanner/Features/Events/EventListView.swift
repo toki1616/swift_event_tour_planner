@@ -155,9 +155,27 @@ struct EventListView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
+
+                if !event.expenses.isEmpty {
+                    Label {
+                        Text(
+                            event.totalExpense,
+                            format: .currency(code: currencyCode)
+                        )
+                        .monospacedDigit()
+                    } icon: {
+                        Image(systemName: "yensign.circle")
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                }
             }
         }
         .padding(.vertical, 4)
+    }
+
+    private var currencyCode: String {
+        Locale.autoupdatingCurrent.currency?.identifier ?? "JPY"
     }
 
 }

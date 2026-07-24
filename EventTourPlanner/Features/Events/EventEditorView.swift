@@ -9,6 +9,8 @@ struct EventEditorView: View {
     @State private var title: String
     @State private var venue: String
     @State private var startDate: Date
+    @State private var expenseName = ""
+    @State private var expenseAmount: Int?
 
     init(
         viewModel: EventListViewModel,
@@ -32,6 +34,10 @@ struct EventEditorView: View {
                         selection: $startDate,
                         displayedComponents: [.date, .hourAndMinute]
                     )
+                }
+
+                if let event {
+                    expenseSection(for: event)
                 }
             }
             .navigationTitle(event == nil ? "イベントを登録" : "イベントを編集")
@@ -70,5 +76,74 @@ struct EventEditorView: View {
                 startDate: startDate
             )
         }
+    }
+
+    private func expenseSection(for event: LiveEvent) -> some View {
+        Section {
+            ForEach(sortedExpenses(for: event)) { expense in
+                HStack {
+                    Text(expense.name)
+
+                    Spacer()
+
+                    Text(expense.amount, format: .currency(code: currencyCode))
+                        .monospacedDigit()
+                }
+            }
+            .onDelete { offsets in
+                let expenses = sortedExpenses(for: event)
+                for index in offsets {
+                    viewModel.deleteExpense(expenses[index])
+                }
+            }
+
+            TextField("費用名", text: $expenseName)
+
+            HStack {
+                TextField(
+                    "金額",
+                    value: $expenseAmount,
+                    format: .number
+                )
+                .keyboardType(.numberPad)
+
+                Button {
+                    addExpense(to: event)
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title3)
+                }
+                .disabled(
+                    expenseName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                        || (expenseAmount ?? 0) <= 0
+                )
+            }
+        } header: {
+            Text("費用")
+        } footer: {
+            HStack {
+                Text("合計")
+                Spacer()
+                Text(event.totalExpense, format: .currency(code: currencyCode))
+                    .fontWeight(.semibold)
+                    .monospacedDigit()
+            }
+        }
+    }
+
+    private func sortedExpenses(for event: LiveEvent) -> [EventExpense] {
+        event.expenses.sorted { $0.createdAt < $1.createdAt }
+    }
+
+    private func addExpense(to event: LiveEvent) {
+        guard let amount = expenseAmount else { return }
+        if viewModel.addExpense(name: expenseName, amount: amount, to: event) {
+            expenseName = ""
+            expenseAmount = nil
+        }
+    }
+
+    private var currencyCode: String {
+        Locale.autoupdatingCurrent.currency?.identifier ?? "JPY"
     }
 }
