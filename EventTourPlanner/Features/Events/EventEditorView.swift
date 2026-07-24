@@ -14,6 +14,7 @@ struct EventEditorView: View {
     @State private var expenseName = ""
     @State private var expenseAmount: Int?
     @State private var expenseCategory = ExpenseCategory.ticket
+    @State private var editingExpense: EventExpense?
 
     init(
         viewModel: EventListViewModel,
@@ -64,6 +65,22 @@ struct EventEditorView: View {
                     .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
+            .sheet(item: $editingExpense) { expense in
+                ExpenseEditorSheet(
+                    expense: expense,
+                    onSave: { name, amount, category in
+                        viewModel.updateExpense(
+                            expense,
+                            name: name,
+                            amount: amount,
+                            category: category
+                        )
+                    },
+                    onDelete: {
+                        viewModel.deleteExpense(expense)
+                    }
+                )
+            }
         }
     }
 
@@ -96,17 +113,27 @@ struct EventEditorView: View {
             }
 
             ForEach(sortedExpenses(for: event)) { expense in
-                HStack {
-                    Label(
-                        expense.name.isEmpty ? expense.category.title : expense.name,
-                        systemImage: expense.category.systemImage
-                    )
+                Button {
+                    editingExpense = expense
+                } label: {
+                    HStack {
+                        Label(
+                            expense.name.isEmpty ? expense.category.title : expense.name,
+                            systemImage: expense.category.systemImage
+                        )
 
-                    Spacer()
+                        Spacer()
 
-                    Text(expense.amount, format: .currency(code: currencyCode))
-                        .monospacedDigit()
+                        Text(expense.amount, format: .currency(code: currencyCode))
+                            .monospacedDigit()
+                            .foregroundStyle(.primary)
+
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
                 }
+                .buttonStyle(.plain)
             }
             .onDelete { offsets in
                 let expenses = sortedExpenses(for: event)
@@ -238,5 +265,86 @@ struct EventEditorView: View {
         let amount: Int
 
         var id: ExpenseCategory { category }
+    }
+}
+
+private struct ExpenseEditorSheet: View {
+    @Environment(\.dismiss) private var dismiss
+
+    let expense: EventExpense
+    let onSave: (String, Int, ExpenseCategory) -> Bool
+    let onDelete: () -> Void
+
+    @State private var name: String
+    @State private var amount: Int?
+    @State private var category: ExpenseCategory
+    @State private var isShowingDeleteConfirmation = false
+
+    init(
+        expense: EventExpense,
+        onSave: @escaping (String, Int, ExpenseCategory) -> Bool,
+        onDelete: @escaping () -> Void
+    ) {
+        self.expense = expense
+        self.onSave = onSave
+        self.onDelete = onDelete
+        _name = State(initialValue: expense.name)
+        _amount = State(initialValue: expense.amount)
+        _category = State(initialValue: expense.category)
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("費用") {
+                    Picker("カテゴリ", selection: $category) {
+                        ForEach(ExpenseCategory.allCases) { category in
+                            Label(category.title, systemImage: category.systemImage)
+                                .tag(category)
+                        }
+                    }
+
+                    TextField("費用名（任意）", text: $name)
+                    TextField("金額", value: $amount, format: .number)
+                        .keyboardType(.numberPad)
+                }
+
+                Section {
+                    Button("削除", role: .destructive) {
+                        isShowingDeleteConfirmation = true
+                    }
+                }
+            }
+            .navigationTitle("費用を編集")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("キャンセル") {
+                        dismiss()
+                    }
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("保存") {
+                        guard let amount else { return }
+                        if onSave(name, amount, category) {
+                            dismiss()
+                        }
+                    }
+                    .disabled((amount ?? 0) <= 0)
+                }
+            }
+            .confirmationDialog(
+                "この費用を削除しますか？",
+                isPresented: $isShowingDeleteConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("削除", role: .destructive) {
+                    onDelete()
+                    dismiss()
+                }
+                Button("キャンセル", role: .cancel) {}
+            }
+        }
     }
 }

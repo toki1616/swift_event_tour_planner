@@ -131,6 +131,41 @@ final class EventListViewModel {
         }
     }
 
+    @discardableResult
+    func updateExpense(
+        _ expense: EventExpense,
+        name: String,
+        amount: Int,
+        category: ExpenseCategory
+    ) -> Bool {
+        guard amount > 0 else {
+            errorMessage = String(localized: "validation.expense_amount_positive")
+            return false
+        }
+
+        let previousValues = (
+            name: expense.name,
+            amount: expense.amount,
+            category: expense.category
+        )
+
+        expense.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        expense.amount = amount
+        expense.category = category
+
+        do {
+            try repository.updateExpense(expense)
+            loadEvents()
+            return true
+        } catch {
+            expense.name = previousValues.name
+            expense.amount = previousValues.amount
+            expense.category = previousValues.category
+            errorMessage = error.localizedDescription
+            return false
+        }
+    }
+
     func deleteExpense(_ expense: EventExpense) {
         do {
             try repository.deleteExpense(expense)

@@ -156,6 +156,7 @@
       }
     },
     "validation.expense_name_required" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -371,6 +372,16 @@
         }
       }
     },
+    "この費用を削除しますか？" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete this expense?"
+          }
+        }
+      }
+    },
     "費用" : {
       "localizations" : {
         "en" : {
@@ -391,7 +402,18 @@
         }
       }
     },
+    "費用を編集" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Expense"
+          }
+        }
+      }
+    },
     "費用名" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
