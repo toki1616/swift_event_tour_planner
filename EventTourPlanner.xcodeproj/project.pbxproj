@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		0B1F7BE39A998B8F21DC4885 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61596CA5DF79FC979B45D6DD /* ContentView.swift */; };
+		85F704EB3013861F00FF566F /* EventEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F704E13013861F00FF566F /* EventEditorView.swift */; };
+		85F704EC3013861F00FF566F /* SwiftDataEventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F704E93013861F00FF566F /* SwiftDataEventRepository.swift */; };
+		85F704ED3013861F00FF566F /* LiveEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F704E63013861F00FF566F /* LiveEvent.swift */; };
+		85F704EE3013861F00FF566F /* EventListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F704E33013861F00FF566F /* EventListViewModel.swift */; };
+		85F704EF3013861F00FF566F /* EventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F704E83013861F00FF566F /* EventRepository.swift */; };
+		85F704F03013861F00FF566F /* EventListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F704E23013861F00FF566F /* EventListView.swift */; };
 		924EBB960D47AD5A7BC2C351 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD5D43B0C4C0E223CE7DD57 /* Foundation.framework */; };
 		E7C4AE4415F618D292A2ED9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA35EA477DE169D49ADE0E98 /* Assets.xcassets */; };
 		E80260824ABEB42E41C82411 /* EventTourPlannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */; };
@@ -17,6 +23,12 @@
 		2C19F6356BFB296217321D3C /* EventTourPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventTourPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		61596CA5DF79FC979B45D6DD /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7FD5D43B0C4C0E223CE7DD57 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		85F704E13013861F00FF566F /* EventEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventEditorView.swift; sourceTree = "<group>"; };
+		85F704E23013861F00FF566F /* EventListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListView.swift; sourceTree = "<group>"; };
+		85F704E33013861F00FF566F /* EventListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListViewModel.swift; sourceTree = "<group>"; };
+		85F704E63013861F00FF566F /* LiveEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveEvent.swift; sourceTree = "<group>"; };
+		85F704E83013861F00FF566F /* EventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRepository.swift; sourceTree = "<group>"; };
+		85F704E93013861F00FF566F /* SwiftDataEventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataEventRepository.swift; sourceTree = "<group>"; };
 		DA35EA477DE169D49ADE0E98 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventTourPlannerApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -44,11 +56,49 @@
 		6811ED04536681A662F2B307 /* EventTourPlanner */ = {
 			isa = PBXGroup;
 			children = (
+				85F704E53013861F00FF566F /* Features */,
+				85F704E73013861F00FF566F /* Models */,
+				85F704EA3013861F00FF566F /* Repositories */,
 				DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */,
 				61596CA5DF79FC979B45D6DD /* ContentView.swift */,
 				DA35EA477DE169D49ADE0E98 /* Assets.xcassets */,
 			);
 			path = EventTourPlanner;
+			sourceTree = "<group>";
+		};
+		85F704E43013861F00FF566F /* Events */ = {
+			isa = PBXGroup;
+			children = (
+				85F704E13013861F00FF566F /* EventEditorView.swift */,
+				85F704E23013861F00FF566F /* EventListView.swift */,
+				85F704E33013861F00FF566F /* EventListViewModel.swift */,
+			);
+			path = Events;
+			sourceTree = "<group>";
+		};
+		85F704E53013861F00FF566F /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				85F704E43013861F00FF566F /* Events */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		85F704E73013861F00FF566F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				85F704E63013861F00FF566F /* LiveEvent.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		85F704EA3013861F00FF566F /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				85F704E83013861F00FF566F /* EventRepository.swift */,
+				85F704E93013861F00FF566F /* SwiftDataEventRepository.swift */,
+			);
+			path = Repositories;
 			sourceTree = "<group>";
 		};
 		94D78412FB92BD7E979ED963 /* iOS */ = {
@@ -146,6 +196,12 @@
 			files = (
 				E80260824ABEB42E41C82411 /* EventTourPlannerApp.swift in Sources */,
 				0B1F7BE39A998B8F21DC4885 /* ContentView.swift in Sources */,
+				85F704EB3013861F00FF566F /* EventEditorView.swift in Sources */,
+				85F704EC3013861F00FF566F /* SwiftDataEventRepository.swift in Sources */,
+				85F704ED3013861F00FF566F /* LiveEvent.swift in Sources */,
+				85F704EE3013861F00FF566F /* EventListViewModel.swift in Sources */,
+				85F704EF3013861F00FF566F /* EventRepository.swift in Sources */,
+				85F704F03013861F00FF566F /* EventListView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,6 +279,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -251,6 +308,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
