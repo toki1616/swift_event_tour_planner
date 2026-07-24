@@ -15,6 +15,15 @@ struct EventEditorView: View {
     @State private var expenseAmount: Int?
     @State private var expenseCategory = ExpenseCategory.ticket
     @State private var editingExpense: EventExpense?
+    @FocusState private var focusedField: Field?
+
+    private enum Field {
+        case title
+        case venue
+        case budget
+        case expenseName
+        case expenseAmount
+    }
 
     init(
         viewModel: EventListViewModel,
@@ -33,7 +42,11 @@ struct EventEditorView: View {
             Form {
                 Section("イベント情報") {
                     TextField("イベント名", text: $title)
+                        .focused($focusedField, equals: .title)
+                        .submitLabel(.done)
                     TextField("会場", text: $venue)
+                        .focused($focusedField, equals: .venue)
+                        .submitLabel(.done)
                     DatePicker(
                         "開演日時",
                         selection: $startDate,
@@ -64,7 +77,9 @@ struct EventEditorView: View {
                     }
                     .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
+
             }
+            .keyboardDoneButton(focusedField: $focusedField)
             .sheet(item: $editingExpense) { expense in
                 ExpenseEditorSheet(
                     expense: expense,
@@ -150,6 +165,8 @@ struct EventEditorView: View {
             }
 
             TextField("費用名（任意）", text: $expenseName)
+                .focused($focusedField, equals: .expenseName)
+                .submitLabel(.done)
 
             HStack {
                 TextField(
@@ -158,6 +175,7 @@ struct EventEditorView: View {
                     format: .number
                 )
                 .keyboardType(.numberPad)
+                .focused($focusedField, equals: .expenseAmount)
 
                 Button {
                     addExpense(to: event)
@@ -201,6 +219,7 @@ struct EventEditorView: View {
         Section("予算") {
             TextField("予算額", value: $budget, format: .number)
                 .keyboardType(.numberPad)
+                .focused($focusedField, equals: .budget)
 
             if let event, (budget ?? 0) > 0 {
                 LabeledContent("支出済み") {
@@ -279,6 +298,12 @@ private struct ExpenseEditorSheet: View {
     @State private var amount: Int?
     @State private var category: ExpenseCategory
     @State private var isShowingDeleteConfirmation = false
+    @FocusState private var focusedField: Field?
+
+    private enum Field {
+        case name
+        case amount
+    }
 
     init(
         expense: EventExpense,
@@ -305,8 +330,11 @@ private struct ExpenseEditorSheet: View {
                     }
 
                     TextField("費用名（任意）", text: $name)
+                        .focused($focusedField, equals: .name)
+                        .submitLabel(.done)
                     TextField("金額", value: $amount, format: .number)
                         .keyboardType(.numberPad)
+                        .focused($focusedField, equals: .amount)
                 }
 
                 Section {
@@ -333,7 +361,9 @@ private struct ExpenseEditorSheet: View {
                     }
                     .disabled((amount ?? 0) <= 0)
                 }
+
             }
+            .keyboardDoneButton(focusedField: $focusedField)
             .confirmationDialog(
                 "この費用を削除しますか？",
                 isPresented: $isShowingDeleteConfirmation,

@@ -16,6 +16,7 @@
 		85F704F03013861F00FF566F /* EventListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F704E23013861F00FF566F /* EventListView.swift */; };
 		85F705013013861F00FF566F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 85F705003013861F00FF566F /* Localizable.xcstrings */; };
 		85F705033013861F00FF566F /* EventExpense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F705023013861F00FF566F /* EventExpense.swift */; };
+		85F705053013861F00FF566F /* KeyboardDismissModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F705043013861F00FF566F /* KeyboardDismissModifier.swift */; };
 		924EBB960D47AD5A7BC2C351 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD5D43B0C4C0E223CE7DD57 /* Foundation.framework */; };
 		E7C4AE4415F618D292A2ED9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA35EA477DE169D49ADE0E98 /* Assets.xcassets */; };
 		E80260824ABEB42E41C82411 /* EventTourPlannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */; };
@@ -33,6 +34,7 @@
 		85F704E93013861F00FF566F /* SwiftDataEventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataEventRepository.swift; sourceTree = "<group>"; };
 		85F705003013861F00FF566F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		85F705023013861F00FF566F /* EventExpense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventExpense.swift; sourceTree = "<group>"; };
+		85F705043013861F00FF566F /* KeyboardDismissModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardDismissModifier.swift; sourceTree = "<group>"; };
 		DA35EA477DE169D49ADE0E98 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventTourPlannerApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -60,6 +62,7 @@
 		6811ED04536681A662F2B307 /* EventTourPlanner */ = {
 			isa = PBXGroup;
 			children = (
+				85F705063013861F00FF566F /* Extensions */,
 				85F704E53013861F00FF566F /* Features */,
 				85F704E73013861F00FF566F /* Models */,
 				85F704EA3013861F00FF566F /* Repositories */,
@@ -105,6 +108,14 @@
 				85F704E93013861F00FF566F /* SwiftDataEventRepository.swift */,
 			);
 			path = Repositories;
+			sourceTree = "<group>";
+		};
+		85F705063013861F00FF566F /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				85F705043013861F00FF566F /* KeyboardDismissModifier.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		94D78412FB92BD7E979ED963 /* iOS */ = {
@@ -211,6 +222,7 @@
 				85F704EF3013861F00FF566F /* EventRepository.swift in Sources */,
 				85F704F03013861F00FF566F /* EventListView.swift in Sources */,
 				85F705033013861F00FF566F /* EventExpense.swift in Sources */,
+				85F705053013861F00FF566F /* KeyboardDismissModifier.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

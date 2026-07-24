@@ -362,6 +362,16 @@
         }
       }
     },
+    "完了" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        }
+      }
+    },
     "編集" : {
       "localizations" : {
         "en" : {
