@@ -16,36 +16,43 @@ struct EventListView: View {
                         description: Text("これから参加するイベントを追加しましょう。")
                     )
                 } else {
-                    List(viewModel.events) { event in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(event.title)
+                    List {
+                        ForEach(eventSections, id: \.date) { section in
+                            Section {
+                                ForEach(section.events) { event in
+                                    eventRow(event)
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            editingEvent = event
+                                        }
+                                        .swipeActions(edge: .trailing) {
+                                            Button(role: .destructive) {
+                                                eventPendingDeletion = event
+                                            } label: {
+                                                Label("削除", systemImage: "trash")
+                                            }
+
+                                            Button {
+                                                editingEvent = event
+                                            } label: {
+                                                Label("編集", systemImage: "pencil")
+                                            }
+                                            .tint(.blue)
+                                        }
+                                }
+                            } header: {
+                                Text(
+                                    section.date,
+                                    format: .dateTime
+                                        .year()
+                                        .month(.wide)
+                                        .day()
+                                        .weekday(.wide)
+                                )
                                 .font(.headline)
-
-                            Text(event.venue)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-
-                            Text(event.startDate, format: .dateTime.year().month().day().hour().minute())
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            editingEvent = event
-                        }
-                        .swipeActions(edge: .trailing) {
-                            Button(role: .destructive) {
-                                eventPendingDeletion = event
-                            } label: {
-                                Label("削除", systemImage: "trash")
+                                .foregroundStyle(.primary)
+                                .textCase(nil)
                             }
-
-                            Button {
-                                editingEvent = event
-                            } label: {
-                                Label("編集", systemImage: "pencil")
-                            }
-                            .tint(.blue)
                         }
                     }
                 }
@@ -113,6 +120,44 @@ struct EventListView: View {
             locale: .autoupdatingCurrent,
             eventPendingDeletion?.title ?? ""
         )
+    }
+
+    private var eventSections: [(date: Date, events: [LiveEvent])] {
+        let calendar = Calendar.autoupdatingCurrent
+        let groupedEvents = Dictionary(
+            grouping: viewModel.events,
+            by: { calendar.startOfDay(for: $0.startDate) }
+        )
+
+        return groupedEvents
+            .map { date, events in
+                (
+                    date: date,
+                    events: events.sorted { $0.startDate < $1.startDate }
+                )
+            }
+            .sorted { $0.date < $1.date }
+    }
+
+    private func eventRow(_ event: LiveEvent) -> some View {
+        HStack(alignment: .top, spacing: 16) {
+            Text(event.startDate, format: .dateTime.hour().minute())
+                .font(.headline.monospacedDigit())
+                .frame(minWidth: 56, alignment: .leading)
+                .foregroundStyle(.primary)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(event.title)
+                    .font(.headline)
+
+                if !event.venue.isEmpty {
+                    Label(event.venue, systemImage: "mappin.and.ellipse")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding(.vertical, 4)
     }
 
 }
