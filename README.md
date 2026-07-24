@@ -1,0 +1,2 @@
+# swift_event_tour_planner
+イベントなどの計画や予算管理アプリ
