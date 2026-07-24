@@ -34,6 +34,25 @@ enum ExpenseCategory: String, CaseIterable, Identifiable {
     }
 }
 
+struct ExpenseDraft: Identifiable {
+    let id: UUID
+    var name: String
+    var amount: Int
+    var category: ExpenseCategory
+
+    init(
+        id: UUID = UUID(),
+        name: String,
+        amount: Int,
+        category: ExpenseCategory
+    ) {
+        self.id = id
+        self.name = name
+        self.amount = amount
+        self.category = category
+    }
+}
+
 @Model
 final class EventExpense {
     var name: String

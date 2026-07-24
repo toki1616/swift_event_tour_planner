@@ -20,15 +20,18 @@ struct ExpenseEditorView: View {
 
     init(
         expense: EventExpense? = nil,
+        initialName: String = "",
+        initialAmount: Int? = nil,
+        initialCategory: ExpenseCategory = .ticket,
         onSave: @escaping (String, Int, ExpenseCategory) -> Bool,
         onDelete: (() -> Void)? = nil
     ) {
         self.expense = expense
         self.onSave = onSave
         self.onDelete = onDelete
-        _name = State(initialValue: expense?.name ?? "")
-        _amount = State(initialValue: expense?.amount)
-        _category = State(initialValue: expense?.category ?? .ticket)
+        _name = State(initialValue: expense?.name ?? initialName)
+        _amount = State(initialValue: expense?.amount ?? initialAmount)
+        _category = State(initialValue: expense?.category ?? initialCategory)
     }
 
     var body: some View {
@@ -59,7 +62,7 @@ struct ExpenseEditorView: View {
                     }
                 }
             }
-            .navigationTitle(expense == nil ? "費用を追加" : "費用を編集")
+            .navigationTitle(onDelete == nil ? "費用を追加" : "費用を編集")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

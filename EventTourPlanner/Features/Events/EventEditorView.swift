@@ -15,8 +15,10 @@ struct EventEditorView: View {
     @State private var startDate: Date
     @State private var scheduledEndDate: Date
     @State private var budget: Int?
+    @State private var expenseDrafts: [ExpenseDraft] = []
     @State private var isShowingExpenseEditor = false
     @State private var editingExpense: EventExpense?
+    @State private var editingExpenseDraft: ExpenseDraft?
     @State private var isMeetupDateCustomized: Bool
     @State private var isDoorsOpenDateCustomized: Bool
     @State private var isScheduledEndDateCustomized: Bool
@@ -95,9 +97,7 @@ struct EventEditorView: View {
 
                 budgetSection
 
-                if let event {
-                    expenseSection(for: event)
-                }
+                expenseSection(for: event)
             }
             .navigationTitle(event == nil ? "イベントを登録" : "イベントを編集")
             .navigationBarTitleDisplayMode(.inline)
@@ -120,14 +120,23 @@ struct EventEditorView: View {
             }
             .keyboardDoneButton(focusedField: $focusedField)
             .sheet(isPresented: $isShowingExpenseEditor) {
-                if let event {
-                    ExpenseEditorView { name, amount, category in
-                        viewModel.addExpense(
+                ExpenseEditorView { name, amount, category in
+                    if let event {
+                        return viewModel.addExpense(
                             name: name,
                             amount: amount,
                             category: category,
                             to: event
                         )
+                    } else {
+                        expenseDrafts.append(
+                            ExpenseDraft(
+                                name: name.trimmingCharacters(in: .whitespacesAndNewlines),
+                                amount: amount,
+                                category: category
+                            )
+                        )
+                        return true
                     }
                 }
             }
@@ -144,6 +153,25 @@ struct EventEditorView: View {
                     },
                     onDelete: {
                         viewModel.deleteExpense(expense)
+                    }
+                )
+            }
+            .sheet(item: $editingExpenseDraft) { draft in
+                ExpenseEditorView(
+                    initialName: draft.name,
+                    initialAmount: draft.amount,
+                    initialCategory: draft.category,
+                    onSave: { name, amount, category in
+                        guard let index = expenseDrafts.firstIndex(where: { $0.id == draft.id }) else {
+                            return false
+                        }
+                        expenseDrafts[index].name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                        expenseDrafts[index].amount = amount
+                        expenseDrafts[index].category = category
+                        return true
+                    },
+                    onDelete: {
+                        expenseDrafts.removeAll { $0.id == draft.id }
                     }
                 )
             }
@@ -172,7 +200,8 @@ struct EventEditorView: View {
                 doorsOpenDate: doorsOpenDate,
                 startDate: startDate,
                 scheduledEndDate: scheduledEndDate,
-                budget: budget ?? 0
+                budget: budget ?? 0,
+                expenses: expenseDrafts
             )
         }
     }
@@ -247,42 +276,49 @@ struct EventEditorView: View {
         )
     }
 
-    private func expenseSection(for event: LiveEvent) -> some View {
+    private func expenseSection(for event: LiveEvent?) -> some View {
         Section {
-            if !event.expenses.isEmpty {
+            if let event, !event.expenses.isEmpty {
                 expenseChart(for: event)
                     .frame(height: 220)
                     .listRowInsets(EdgeInsets())
                     .padding()
             }
 
-            ForEach(sortedExpenses(for: event)) { expense in
-                Button {
-                    editingExpense = expense
-                } label: {
-                    HStack {
-                        Label(
-                            expense.name.isEmpty ? expense.category.title : expense.name,
-                            systemImage: expense.category.systemImage
+            if let event {
+                ForEach(sortedExpenses(for: event)) { expense in
+                    Button {
+                        editingExpense = expense
+                    } label: {
+                        expenseRow(
+                            name: expense.name,
+                            amount: expense.amount,
+                            category: expense.category
                         )
-
-                        Spacer()
-
-                        Text(expense.amount, format: .currency(code: currencyCode))
-                            .monospacedDigit()
-                            .foregroundStyle(.primary)
-
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .onDelete { offsets in
+                    let expenses = sortedExpenses(for: event)
+                    for index in offsets {
+                        viewModel.deleteExpense(expenses[index])
                     }
                 }
-                .buttonStyle(.plain)
-            }
-            .onDelete { offsets in
-                let expenses = sortedExpenses(for: event)
-                for index in offsets {
-                    viewModel.deleteExpense(expenses[index])
+            } else {
+                ForEach(expenseDrafts) { draft in
+                    Button {
+                        editingExpenseDraft = draft
+                    } label: {
+                        expenseRow(
+                            name: draft.name,
+                            amount: draft.amount,
+                            category: draft.category
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+                .onDelete { offsets in
+                    expenseDrafts.remove(atOffsets: offsets)
                 }
             }
 
@@ -297,10 +333,36 @@ struct EventEditorView: View {
             HStack {
                 Text("合計")
                 Spacer()
-                Text(event.totalExpense, format: .currency(code: currencyCode))
+                Text(
+                    event?.totalExpense ?? expenseDrafts.reduce(0) { $0 + $1.amount },
+                    format: .currency(code: currencyCode)
+                )
                     .fontWeight(.semibold)
                     .monospacedDigit()
             }
+        }
+    }
+
+    private func expenseRow(
+        name: String,
+        amount: Int,
+        category: ExpenseCategory
+    ) -> some View {
+        HStack {
+            Label(
+                name.isEmpty ? category.title : name,
+                systemImage: category.systemImage
+            )
+
+            Spacer()
+
+            Text(amount, format: .currency(code: currencyCode))
+                .monospacedDigit()
+                .foregroundStyle(.primary)
+
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
         }
     }
 

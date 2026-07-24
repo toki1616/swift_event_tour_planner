@@ -31,7 +31,8 @@ final class EventListViewModel {
         doorsOpenDate: Date,
         startDate: Date,
         scheduledEndDate: Date,
-        budget: Int
+        budget: Int,
+        expenses: [ExpenseDraft] = []
     ) -> Bool {
         guard let input = validatedInput(
             title: title,
@@ -40,18 +41,25 @@ final class EventListViewModel {
         ) else { return false }
 
         do {
-            try repository.add(
-                LiveEvent(
-                    title: input.title,
-                    venue: input.venue,
-                    eventType: eventType,
-                    meetupDate: meetupDate,
-                    doorsOpenDate: doorsOpenDate,
-                    startDate: input.startDate,
-                    scheduledEndDate: scheduledEndDate,
-                    budget: max(budget, 0)
-                )
+            let event = LiveEvent(
+                title: input.title,
+                venue: input.venue,
+                eventType: eventType,
+                meetupDate: meetupDate,
+                doorsOpenDate: doorsOpenDate,
+                startDate: input.startDate,
+                scheduledEndDate: scheduledEndDate,
+                budget: max(budget, 0)
             )
+            event.expenses = expenses.map { draft in
+                EventExpense(
+                    name: draft.name,
+                    amount: draft.amount,
+                    category: draft.category,
+                    event: event
+                )
+            }
+            try repository.add(event)
             loadEvents()
             return true
         } catch {
