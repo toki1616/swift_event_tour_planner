@@ -10,7 +10,8 @@ struct EventTourPlannerApp: App {
         do {
             let container = try ModelContainer(
                 for: LiveEvent.self,
-                EventExpense.self
+                EventExpense.self,
+                TourPlan.self
             )
             modelContainer = container
             eventListViewModel = EventListViewModel(
