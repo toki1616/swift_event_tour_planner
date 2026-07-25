@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TourListView: View {
     let viewModel: TourListViewModel
+    let eventViewModel: EventListViewModel
 
     @State private var isShowingEditor = false
     @State private var editingTour: TourPlan?
@@ -18,25 +19,29 @@ struct TourListView: View {
                     )
                 } else {
                     List(viewModel.tours) { tour in
-                        tourRow(tour)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                editingTour = tour
+                        NavigationLink {
+                            TourDetailView(
+                                viewModel: viewModel,
+                                eventViewModel: eventViewModel,
+                                tour: tour
+                            )
+                        } label: {
+                            tourRow(tour)
+                        }
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                tourPendingDeletion = tour
+                            } label: {
+                                Label("削除", systemImage: "trash")
                             }
-                            .swipeActions {
-                                Button(role: .destructive) {
-                                    tourPendingDeletion = tour
-                                } label: {
-                                    Label("削除", systemImage: "trash")
-                                }
 
-                                Button {
-                                    editingTour = tour
-                                } label: {
-                                    Label("編集", systemImage: "pencil")
-                                }
-                                .tint(.blue)
+                            Button {
+                                editingTour = tour
+                            } label: {
+                                Label("編集", systemImage: "pencil")
                             }
+                            .tint(.blue)
+                        }
                     }
                 }
             }
@@ -51,12 +56,20 @@ struct TourListView: View {
         }
         .task {
             viewModel.loadTours()
+            eventViewModel.loadEvents()
         }
         .sheet(isPresented: $isShowingEditor) {
-            TourEditorView(viewModel: viewModel)
+            TourEditorView(
+                viewModel: viewModel,
+                availableEvents: eventViewModel.events
+            )
         }
         .sheet(item: $editingTour) { tour in
-            TourEditorView(viewModel: viewModel, tour: tour)
+            TourEditorView(
+                viewModel: viewModel,
+                tour: tour,
+                availableEvents: eventViewModel.events
+            )
         }
         .confirmationDialog(
             "「\(tourPendingDeletion?.title ?? "")」を削除しますか？",

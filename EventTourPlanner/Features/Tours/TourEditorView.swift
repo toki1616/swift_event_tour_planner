@@ -1,16 +1,19 @@
 import SwiftUI
+import SwiftData
 
 struct TourEditorView: View {
     @Environment(\.dismiss) private var dismiss
 
     let viewModel: TourListViewModel
     let tour: TourPlan?
+    let availableEvents: [LiveEvent]
 
     @State private var title: String
     @State private var startDate: Date
     @State private var endDate: Date
     @State private var budget: Int?
     @State private var notes: String
+    @State private var selectedEventIDs: Set<PersistentIdentifier>
     @FocusState private var focusedField: Field?
 
     private enum Field {
@@ -19,9 +22,14 @@ struct TourEditorView: View {
         case notes
     }
 
-    init(viewModel: TourListViewModel, tour: TourPlan? = nil) {
+    init(
+        viewModel: TourListViewModel,
+        tour: TourPlan? = nil,
+        availableEvents: [LiveEvent]
+    ) {
         self.viewModel = viewModel
         self.tour = tour
+        self.availableEvents = availableEvents
 
         let defaultStartDate = tour?.startDate ?? Calendar.autoupdatingCurrent.startOfDay(for: Date())
         _title = State(initialValue: tour?.title ?? "")
@@ -29,6 +37,9 @@ struct TourEditorView: View {
         _endDate = State(initialValue: tour?.endDate ?? defaultStartDate)
         _budget = State(initialValue: tour.map(\.budget))
         _notes = State(initialValue: tour?.notes ?? "")
+        _selectedEventIDs = State(
+            initialValue: Set(tour?.events.map(\.persistentModelID) ?? [])
+        )
     }
 
     var body: some View {
@@ -62,6 +73,41 @@ struct TourEditorView: View {
                     TextField("移動や宿泊などのメモ（任意）", text: $notes, axis: .vertical)
                         .lineLimit(3...8)
                         .focused($focusedField, equals: .notes)
+                }
+
+                Section {
+                    if selectableEvents.isEmpty {
+                        Text("登録済みのイベントがありません。")
+                            .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(selectableEvents) { event in
+                            Button {
+                                toggleSelection(of: event)
+                            } label: {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 3) {
+                                        Text(event.title)
+                                            .foregroundStyle(.primary)
+                                        Text(
+                                            event.startDate,
+                                            format: .dateTime.year().month().day()
+                                        )
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    if selectedEventIDs.contains(event.persistentModelID) {
+                                        Image(systemName: "checkmark")
+                                            .fontWeight(.semibold)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } header: {
+                    Text("イベント")
+                } footer: {
+                    Text("別のツアーに登録済みのイベントは選択できません。")
                 }
             }
             .navigationTitle(tour == nil ? "ツアーを登録" : "ツアーを編集")
@@ -106,7 +152,8 @@ struct TourEditorView: View {
                 startDate: startDate,
                 endDate: endDate,
                 budget: budget ?? 0,
-                notes: notes
+                notes: notes,
+                events: selectedEvents
             )
         }
         return viewModel.addTour(
@@ -114,7 +161,28 @@ struct TourEditorView: View {
             startDate: startDate,
             endDate: endDate,
             budget: budget ?? 0,
-            notes: notes
+            notes: notes,
+            events: selectedEvents
         )
+    }
+
+    private var selectableEvents: [LiveEvent] {
+        availableEvents
+            .filter { $0.tour == nil || $0.tour === tour }
+            .sorted { $0.startDate < $1.startDate }
+    }
+
+    private var selectedEvents: [LiveEvent] {
+        selectableEvents.filter {
+            selectedEventIDs.contains($0.persistentModelID)
+        }
+    }
+
+    private func toggleSelection(of event: LiveEvent) {
+        if selectedEventIDs.contains(event.persistentModelID) {
+            selectedEventIDs.remove(event.persistentModelID)
+        } else {
+            selectedEventIDs.insert(event.persistentModelID)
+        }
     }
 }

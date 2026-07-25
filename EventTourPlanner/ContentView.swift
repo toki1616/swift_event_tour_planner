@@ -11,7 +11,10 @@ struct ContentView: View {
                     Label("イベント", systemImage: "music.note.list")
                 }
 
-            TourListView(viewModel: tourViewModel)
+            TourListView(
+                viewModel: tourViewModel,
+                eventViewModel: eventViewModel
+            )
                 .tabItem {
                     Label("ツアー", systemImage: "suitcase.rolling")
                 }

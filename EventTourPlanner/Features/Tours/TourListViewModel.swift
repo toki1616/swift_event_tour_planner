@@ -28,7 +28,8 @@ final class TourListViewModel {
         startDate: Date,
         endDate: Date,
         budget: Int,
-        notes: String
+        notes: String,
+        events: [LiveEvent]
     ) -> Bool {
         guard let input = validatedInput(
             title: title,
@@ -37,15 +38,16 @@ final class TourListViewModel {
         ) else { return false }
 
         do {
-            try repository.add(
-                TourPlan(
-                    title: input.title,
-                    startDate: input.startDate,
-                    endDate: input.endDate,
-                    budget: max(budget, 0),
-                    notes: notes.trimmingCharacters(in: .whitespacesAndNewlines)
-                )
+            let tour = TourPlan(
+                title: input.title,
+                startDate: input.startDate,
+                endDate: input.endDate,
+                budget: max(budget, 0),
+                notes: notes.trimmingCharacters(in: .whitespacesAndNewlines)
             )
+            tour.events = events
+            events.forEach { $0.tour = tour }
+            try repository.add(tour)
             loadTours()
             return true
         } catch {
@@ -61,7 +63,8 @@ final class TourListViewModel {
         startDate: Date,
         endDate: Date,
         budget: Int,
-        notes: String
+        notes: String,
+        events: [LiveEvent]
     ) -> Bool {
         guard let input = validatedInput(
             title: title,
@@ -74,6 +77,12 @@ final class TourListViewModel {
         tour.endDate = input.endDate
         tour.budget = max(budget, 0)
         tour.notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
+        let removedEvents = tour.events.filter { previousEvent in
+            !events.contains { $0 === previousEvent }
+        }
+        removedEvents.forEach { $0.tour = nil }
+        tour.events = events
+        events.forEach { $0.tour = tour }
 
         do {
             try repository.update(tour)

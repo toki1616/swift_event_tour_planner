@@ -22,7 +22,12 @@ final class SwiftDataTourRepository: TourRepository {
     }
 
     func update(_ tour: TourPlan) throws {
-        try modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            modelContext.rollback()
+            throw error
+        }
     }
 
     func delete(_ tour: TourPlan) throws {
