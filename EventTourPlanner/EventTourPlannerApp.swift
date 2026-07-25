@@ -5,6 +5,7 @@ import SwiftData
 struct EventTourPlannerApp: App {
     private let modelContainer: ModelContainer
     private let eventListViewModel: EventListViewModel
+    private let tourListViewModel: TourListViewModel
 
     init() {
         do {
@@ -19,6 +20,11 @@ struct EventTourPlannerApp: App {
                     modelContext: container.mainContext
                 )
             )
+            tourListViewModel = TourListViewModel(
+                repository: SwiftDataTourRepository(
+                    modelContext: container.mainContext
+                )
+            )
         } catch {
             fatalError("SwiftDataの初期化に失敗しました: \(error)")
         }
@@ -26,7 +32,10 @@ struct EventTourPlannerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(viewModel: eventListViewModel)
+            ContentView(
+                eventViewModel: eventListViewModel,
+                tourViewModel: tourListViewModel
+            )
         }
         .modelContainer(modelContainer)
     }
