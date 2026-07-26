@@ -91,6 +91,19 @@ struct TourListView: View {
         } message: {
             Text("ツアーを削除してもイベントは削除されません。")
         }
+        .alert(
+            "エラー",
+            isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.clearError() } }
+            )
+        ) {
+            Button("OK") {
+                viewModel.clearError()
+            }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
     }
 
     private func tourRow(_ tour: TourPlan) -> some View {
