@@ -34,7 +34,8 @@ final class TourListViewModel {
         guard let input = validatedInput(
             title: title,
             startDate: startDate,
-            endDate: endDate
+            endDate: endDate,
+            events: events
         ) else { return false }
 
         do {
@@ -69,7 +70,8 @@ final class TourListViewModel {
         guard let input = validatedInput(
             title: title,
             startDate: startDate,
-            endDate: endDate
+            endDate: endDate,
+            events: events
         ) else { return false }
 
         tour.title = input.title
@@ -110,15 +112,32 @@ final class TourListViewModel {
     private func validatedInput(
         title: String,
         startDate: Date,
-        endDate: Date
+        endDate: Date,
+        events: [LiveEvent]
     ) -> (title: String, startDate: Date, endDate: Date)? {
         let normalizedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !normalizedTitle.isEmpty else {
-            errorMessage = "ツアー名を入力してください。"
+            errorMessage = String(localized: "validation.tour_name_required")
             return nil
         }
         guard startDate <= endDate else {
-            errorMessage = "終了日は開始日以降に設定してください。"
+            errorMessage = String(localized: "validation.tour_date_order")
+            return nil
+        }
+        let calendar = Calendar.autoupdatingCurrent
+        let firstDay = calendar.startOfDay(for: startDate)
+        guard let dayAfterLast = calendar.date(
+            byAdding: .day,
+            value: 1,
+            to: calendar.startOfDay(for: endDate)
+        ) else {
+            errorMessage = String(localized: "validation.tour_period_invalid")
+            return nil
+        }
+        guard events.allSatisfy({
+            firstDay <= $0.startDate && $0.startDate < dayAfterLast
+        }) else {
+            errorMessage = String(localized: "validation.tour_event_outside_period")
             return nil
         }
         return (normalizedTitle, startDate, endDate)

@@ -77,7 +77,7 @@ struct TourEditorView: View {
 
                 Section {
                     if selectableEvents.isEmpty {
-                        Text("登録済みのイベントがありません。")
+                        Text("ツアー期間内のイベントがありません。")
                             .foregroundStyle(.secondary)
                     } else {
                         ForEach(selectableEvents) { event in
@@ -169,6 +169,7 @@ struct TourEditorView: View {
     private var selectableEvents: [LiveEvent] {
         availableEvents
             .filter { $0.tour == nil || $0.tour === tour }
+            .filter { isWithinTourPeriod($0.startDate) }
             .sorted { $0.startDate < $1.startDate }
     }
 
@@ -184,5 +185,18 @@ struct TourEditorView: View {
         } else {
             selectedEventIDs.insert(event.persistentModelID)
         }
+    }
+
+    private func isWithinTourPeriod(_ date: Date) -> Bool {
+        let calendar = Calendar.autoupdatingCurrent
+        let firstDay = calendar.startOfDay(for: startDate)
+        guard let dayAfterLast = calendar.date(
+            byAdding: .day,
+            value: 1,
+            to: calendar.startOfDay(for: endDate)
+        ) else {
+            return false
+        }
+        return firstDay <= date && date < dayAfterLast
     }
 }
