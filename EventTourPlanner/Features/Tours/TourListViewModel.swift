@@ -105,6 +105,97 @@ final class TourListViewModel {
         }
     }
 
+    @discardableResult
+    func addScheduleItem(
+        to tour: TourPlan,
+        type: TourScheduleType,
+        title: String,
+        startDate: Date,
+        endDate: Date,
+        departureLocation: String,
+        arrivalLocation: String,
+        reservationNumber: String,
+        notes: String
+    ) -> Bool {
+        guard let input = validatedScheduleInput(
+            tour: tour,
+            title: title,
+            startDate: startDate,
+            endDate: endDate
+        ) else { return false }
+
+        do {
+            try repository.addScheduleItem(
+                TourScheduleItem(
+                    type: type,
+                    title: input.title,
+                    startDate: input.startDate,
+                    endDate: input.endDate,
+                    departureLocation: normalized(departureLocation),
+                    arrivalLocation: normalized(arrivalLocation),
+                    reservationNumber: normalized(reservationNumber),
+                    notes: normalized(notes)
+                ),
+                to: tour
+            )
+            loadTours()
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
+        }
+    }
+
+    @discardableResult
+    func updateScheduleItem(
+        _ item: TourScheduleItem,
+        type: TourScheduleType,
+        title: String,
+        startDate: Date,
+        endDate: Date,
+        departureLocation: String,
+        arrivalLocation: String,
+        reservationNumber: String,
+        notes: String
+    ) -> Bool {
+        guard
+            let tour = item.tour,
+            let input = validatedScheduleInput(
+                tour: tour,
+                title: title,
+                startDate: startDate,
+                endDate: endDate
+            )
+        else { return false }
+
+        item.type = type
+        item.title = input.title
+        item.startDate = input.startDate
+        item.endDate = input.endDate
+        item.departureLocation = normalized(departureLocation)
+        item.arrivalLocation = normalized(arrivalLocation)
+        item.reservationNumber = normalized(reservationNumber)
+        item.notes = normalized(notes)
+
+        do {
+            try repository.updateScheduleItem(item)
+            loadTours()
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
+        }
+    }
+
+    func deleteScheduleItem(_ item: TourScheduleItem) {
+        do {
+            try repository.deleteScheduleItem(item)
+            loadTours()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
     func clearError() {
         errorMessage = nil
     }
@@ -141,5 +232,38 @@ final class TourListViewModel {
             return nil
         }
         return (normalizedTitle, startDate, endDate)
+    }
+
+    private func validatedScheduleInput(
+        tour: TourPlan,
+        title: String,
+        startDate: Date,
+        endDate: Date
+    ) -> (title: String, startDate: Date, endDate: Date)? {
+        let normalizedTitle = normalized(title)
+        guard !normalizedTitle.isEmpty else {
+            errorMessage = String(localized: "validation.schedule_title_required")
+            return nil
+        }
+        guard startDate <= endDate else {
+            errorMessage = String(localized: "validation.schedule_date_order")
+            return nil
+        }
+
+        let calendar = Calendar.autoupdatingCurrent
+        let firstDay = calendar.startOfDay(for: tour.startDate)
+        guard let dayAfterLast = calendar.date(
+            byAdding: .day,
+            value: 1,
+            to: calendar.startOfDay(for: tour.endDate)
+        ), firstDay <= startDate, endDate < dayAfterLast else {
+            errorMessage = String(localized: "validation.schedule_outside_tour")
+            return nil
+        }
+        return (normalizedTitle, startDate, endDate)
+    }
+
+    private func normalized(_ value: String) -> String {
+        value.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

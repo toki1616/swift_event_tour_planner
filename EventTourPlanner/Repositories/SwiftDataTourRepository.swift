@@ -44,4 +44,28 @@ final class SwiftDataTourRepository: TourRepository {
             throw error
         }
     }
+
+    func addScheduleItem(_ item: TourScheduleItem, to tour: TourPlan) throws {
+        item.tour = tour
+        modelContext.insert(item)
+        try saveOrRollback()
+    }
+
+    func updateScheduleItem(_ item: TourScheduleItem) throws {
+        try saveOrRollback()
+    }
+
+    func deleteScheduleItem(_ item: TourScheduleItem) throws {
+        modelContext.delete(item)
+        try saveOrRollback()
+    }
+
+    private func saveOrRollback() throws {
+        do {
+            try modelContext.save()
+        } catch {
+            modelContext.rollback()
+            throw error
+        }
+    }
 }

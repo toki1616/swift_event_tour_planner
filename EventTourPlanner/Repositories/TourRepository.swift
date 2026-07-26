@@ -6,4 +6,7 @@ protocol TourRepository {
     func add(_ tour: TourPlan) throws
     func update(_ tour: TourPlan) throws
     func delete(_ tour: TourPlan) throws
+    func addScheduleItem(_ item: TourScheduleItem, to tour: TourPlan) throws
+    func updateScheduleItem(_ item: TourScheduleItem) throws
+    func deleteScheduleItem(_ item: TourScheduleItem) throws
 }

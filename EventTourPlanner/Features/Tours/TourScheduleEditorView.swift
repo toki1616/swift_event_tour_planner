@@ -1,0 +1,204 @@
+import SwiftUI
+
+struct TourScheduleEditorView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    let viewModel: TourListViewModel
+    let tour: TourPlan
+    let item: TourScheduleItem?
+
+    @State private var type: TourScheduleType
+    @State private var title: String
+    @State private var startDate: Date
+    @State private var endDate: Date
+    @State private var departureLocation: String
+    @State private var arrivalLocation: String
+    @State private var reservationNumber: String
+    @State private var notes: String
+    @State private var isShowingDeleteConfirmation = false
+    @FocusState private var focusedField: Field?
+
+    private enum Field {
+        case title
+        case departureLocation
+        case arrivalLocation
+        case reservationNumber
+        case notes
+    }
+
+    init(
+        viewModel: TourListViewModel,
+        tour: TourPlan,
+        item: TourScheduleItem? = nil
+    ) {
+        self.viewModel = viewModel
+        self.tour = tour
+        self.item = item
+
+        let tourEndLimit = Calendar.autoupdatingCurrent.date(
+            bySettingHour: 23,
+            minute: 59,
+            second: 59,
+            of: tour.endDate
+        ) ?? tour.endDate
+        let defaultDate = item?.startDate
+            ?? min(max(tour.startDate, Date()), tourEndLimit)
+        _type = State(initialValue: item?.type ?? .transportation)
+        _title = State(initialValue: item?.title ?? "")
+        _startDate = State(initialValue: defaultDate)
+        _endDate = State(initialValue: item?.endDate ?? defaultDate)
+        _departureLocation = State(initialValue: item?.departureLocation ?? "")
+        _arrivalLocation = State(initialValue: item?.arrivalLocation ?? "")
+        _reservationNumber = State(initialValue: item?.reservationNumber ?? "")
+        _notes = State(initialValue: item?.notes ?? "")
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("種類") {
+                    Picker("種類", selection: $type) {
+                        ForEach(TourScheduleType.allCases) { type in
+                            Label(type.title, systemImage: type.systemImage)
+                                .tag(type)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
+
+                Section(type == .transportation ? "移動情報" : "宿泊情報") {
+                    TextField(titlePlaceholder, text: $title)
+                        .focused($focusedField, equals: .title)
+                        .submitLabel(.done)
+
+                    DatePicker(
+                        startDateTitle,
+                        selection: $startDate,
+                        in: tour.startDate...tourEndLimit
+                    )
+                    DatePicker(
+                        endDateTitle,
+                        selection: $endDate,
+                        in: startDate...tourEndLimit
+                    )
+
+                    if type == .transportation {
+                        TextField("出発地（任意）", text: $departureLocation)
+                            .focused($focusedField, equals: .departureLocation)
+                        TextField("到着地（任意）", text: $arrivalLocation)
+                            .focused($focusedField, equals: .arrivalLocation)
+                    }
+                }
+
+                Section("予約情報") {
+                    TextField("予約番号（任意）", text: $reservationNumber)
+                        .textInputAutocapitalization(.characters)
+                        .focused($focusedField, equals: .reservationNumber)
+                    TextField("メモ（任意）", text: $notes, axis: .vertical)
+                        .lineLimit(3...8)
+                        .focused($focusedField, equals: .notes)
+                }
+
+                if item != nil {
+                    Section {
+                        Button("削除", role: .destructive) {
+                            isShowingDeleteConfirmation = true
+                        }
+                    }
+                }
+            }
+            .navigationTitle(item == nil ? "予定を追加" : "予定を編集")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("キャンセル") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("保存") {
+                        if save() {
+                            dismiss()
+                        }
+                    }
+                    .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+            .keyboardDoneButton(focusedField: $focusedField)
+            .alert(
+                "保存できません",
+                isPresented: Binding(
+                    get: { viewModel.errorMessage != nil },
+                    set: { if !$0 { viewModel.clearError() } }
+                )
+            ) {
+                Button("OK") {
+                    viewModel.clearError()
+                }
+            } message: {
+                Text(viewModel.errorMessage ?? "")
+            }
+            .confirmationDialog(
+                "この予定を削除しますか？",
+                isPresented: $isShowingDeleteConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("削除", role: .destructive) {
+                    if let item {
+                        viewModel.deleteScheduleItem(item)
+                    }
+                    dismiss()
+                }
+                Button("キャンセル", role: .cancel) {}
+            }
+        }
+    }
+
+    private var tourEndLimit: Date {
+        Calendar.autoupdatingCurrent.date(
+            bySettingHour: 23,
+            minute: 59,
+            second: 59,
+            of: tour.endDate
+        ) ?? tour.endDate
+    }
+
+    private var titlePlaceholder: LocalizedStringKey {
+        type == .transportation ? "交通手段・便名" : "宿泊施設名"
+    }
+
+    private var startDateTitle: LocalizedStringKey {
+        type == .transportation ? "出発日時" : "チェックイン"
+    }
+
+    private var endDateTitle: LocalizedStringKey {
+        type == .transportation ? "到着日時" : "チェックアウト"
+    }
+
+    private func save() -> Bool {
+        if let item {
+            return viewModel.updateScheduleItem(
+                item,
+                type: type,
+                title: title,
+                startDate: startDate,
+                endDate: endDate,
+                departureLocation: departureLocation,
+                arrivalLocation: arrivalLocation,
+                reservationNumber: reservationNumber,
+                notes: notes
+            )
+        }
+        return viewModel.addScheduleItem(
+            to: tour,
+            type: type,
+            title: title,
+            startDate: startDate,
+            endDate: endDate,
+            departureLocation: departureLocation,
+            arrivalLocation: arrivalLocation,
+            reservationNumber: reservationNumber,
+            notes: notes
+        )
+    }
+}

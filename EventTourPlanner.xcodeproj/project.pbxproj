@@ -27,6 +27,7 @@
 		85F707053013861F00FF566F /* TourListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F707043013861F00FF566F /* TourListView.swift */; };
 		85F708013013861F00FF566F /* TourDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F708003013861F00FF566F /* TourDetailView.swift */; };
 		85F709013013861F00FF566F /* TourScheduleItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F709003013861F00FF566F /* TourScheduleItem.swift */; };
+		85F70A013013861F00FF566F /* TourScheduleEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F70A003013861F00FF566F /* TourScheduleEditorView.swift */; };
 		924EBB960D47AD5A7BC2C351 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD5D43B0C4C0E223CE7DD57 /* Foundation.framework */; };
 		E7C4AE4415F618D292A2ED9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA35EA477DE169D49ADE0E98 /* Assets.xcassets */; };
 		E80260824ABEB42E41C82411 /* EventTourPlannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */; };
@@ -55,6 +56,7 @@
 		85F707043013861F00FF566F /* TourListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourListView.swift; sourceTree = "<group>"; };
 		85F708003013861F00FF566F /* TourDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourDetailView.swift; sourceTree = "<group>"; };
 		85F709003013861F00FF566F /* TourScheduleItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourScheduleItem.swift; sourceTree = "<group>"; };
+		85F70A003013861F00FF566F /* TourScheduleEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourScheduleEditorView.swift; sourceTree = "<group>"; };
 		DA35EA477DE169D49ADE0E98 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventTourPlannerApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -160,6 +162,7 @@
 				85F707023013861F00FF566F /* TourEditorView.swift */,
 				85F707043013861F00FF566F /* TourListView.swift */,
 				85F707003013861F00FF566F /* TourListViewModel.swift */,
+				85F70A003013861F00FF566F /* TourScheduleEditorView.swift */,
 			);
 			path = Tours;
 			sourceTree = "<group>";
@@ -279,6 +282,7 @@
 				85F707053013861F00FF566F /* TourListView.swift in Sources */,
 				85F708013013861F00FF566F /* TourDetailView.swift in Sources */,
 				85F709013013861F00FF566F /* TourScheduleItem.swift in Sources */,
+				85F70A013013861F00FF566F /* TourScheduleEditorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
