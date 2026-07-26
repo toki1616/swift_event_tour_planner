@@ -257,6 +257,139 @@ final class TourScheduleTests: XCTestCase {
         XCTAssertNil(viewModel.errorMessage)
     }
 
+    @MainActor
+    func testTourValidationRejectsInvalidNameAndDateOrder() {
+        let invalidInputs = [
+            ("   ", Date(), Date().addingTimeInterval(86400)),
+            ("Tour", Date().addingTimeInterval(86400), Date())
+        ]
+
+        for input in invalidInputs {
+            let repository = TourRepositoryStub()
+            let viewModel = TourListViewModel(repository: repository)
+
+            let result = viewModel.addTour(
+                title: input.0,
+                startDate: input.1,
+                endDate: input.2,
+                budget: 0,
+                notes: "",
+                events: [],
+                scheduleItems: []
+            )
+
+            XCTAssertFalse(result)
+            XCTAssertTrue(repository.addedTours.isEmpty)
+            XCTAssertNotNil(viewModel.errorMessage)
+        }
+    }
+
+    @MainActor
+    func testTourValidationRejectsEventsAndSchedulesOutsidePeriod() {
+        let startDate = Date()
+        let endDate = startDate.addingTimeInterval(86400)
+        let outsideEvent = LiveEvent(
+            title: "Outside",
+            venue: "",
+            startDate: endDate.addingTimeInterval(86400)
+        )
+        let outsideSchedule = TourScheduleDraft(
+            type: .transportation,
+            title: "電車",
+            startDate: startDate.addingTimeInterval(-86400),
+            endDate: startDate
+        )
+
+        for input in [
+            (events: [outsideEvent], schedules: []),
+            (events: [], schedules: [outsideSchedule])
+        ] {
+            let repository = TourRepositoryStub()
+            let viewModel = TourListViewModel(repository: repository)
+
+            let result = viewModel.addTour(
+                title: "Tour",
+                startDate: startDate,
+                endDate: endDate,
+                budget: 0,
+                notes: "",
+                events: input.events,
+                scheduleItems: input.schedules
+            )
+
+            XCTAssertFalse(result)
+            XCTAssertTrue(repository.addedTours.isEmpty)
+            XCTAssertNotNil(viewModel.errorMessage)
+        }
+    }
+
+    @MainActor
+    func testScheduleValidationRejectsInvalidInputs() {
+        let tour = makeTour()
+        let invalidInputs = [
+            (
+                title: "   ",
+                startDate: tour.startDate,
+                endDate: tour.endDate
+            ),
+            (
+                title: "電車",
+                startDate: tour.endDate,
+                endDate: tour.startDate
+            ),
+            (
+                title: "電車",
+                startDate: tour.startDate.addingTimeInterval(-86400),
+                endDate: tour.startDate
+            )
+        ]
+
+        for input in invalidInputs {
+            let repository = TourRepositoryStub()
+            let viewModel = TourListViewModel(repository: repository)
+
+            let result = viewModel.addScheduleItem(
+                to: tour,
+                type: .transportation,
+                title: input.title,
+                startDate: input.startDate,
+                endDate: input.endDate,
+                departureLocation: "",
+                arrivalLocation: "",
+                reservationNumber: "",
+                notes: ""
+            )
+
+            XCTAssertFalse(result)
+            XCTAssertTrue(repository.addedScheduleItems.isEmpty)
+            XCTAssertNotNil(viewModel.errorMessage)
+        }
+    }
+
+    @MainActor
+    func testRepositoryFailuresAreReported() {
+        let tour = makeTour()
+        let repository = TourRepositoryStub()
+        repository.addScheduleError = TourRepositoryStub.reloadError
+        let viewModel = TourListViewModel(repository: repository)
+
+        let result = viewModel.addScheduleItem(
+            to: tour,
+            type: .transportation,
+            title: "新幹線",
+            startDate: tour.startDate,
+            endDate: tour.endDate,
+            departureLocation: "",
+            arrivalLocation: "",
+            reservationNumber: "",
+            notes: ""
+        )
+
+        XCTAssertFalse(result)
+        XCTAssertTrue(tour.scheduleItems.isEmpty)
+        XCTAssertNotNil(viewModel.errorMessage)
+    }
+
     private func makeTour() -> TourPlan {
         let startDate = Date()
         return TourPlan(
@@ -305,6 +438,7 @@ private final class TourRepositoryStub: TourRepository {
     var addedScheduleItems: [TourScheduleItem] = []
     var updatedScheduleItems: [TourScheduleItem] = []
     var deletedScheduleItems: [TourScheduleItem] = []
+    var addScheduleError: Error?
 
     func fetchTours() throws -> [TourPlan] {
         fetchCallCount += 1
@@ -330,6 +464,7 @@ private final class TourRepositoryStub: TourRepository {
     }
 
     func addScheduleItem(_ item: TourScheduleItem, to tour: TourPlan) throws {
+        if let addScheduleError { throw addScheduleError }
         addedScheduleItems.append(item)
     }
 
