@@ -141,6 +141,22 @@ struct TourDetailView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+
+                if !item.reservationNumber.isEmpty {
+                    LabeledContent(
+                        "予約情報",
+                        value: item.reservationNumber
+                    )
+                    .font(.subheadline)
+                }
+
+                if !item.notes.isEmpty {
+                    LabeledContent("メモ") {
+                        Text(item.notes)
+                            .multilineTextAlignment(.trailing)
+                    }
+                    .font(.subheadline)
+                }
             }
 
             Spacer()
