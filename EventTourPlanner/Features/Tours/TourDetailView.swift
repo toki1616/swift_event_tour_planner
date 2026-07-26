@@ -6,6 +6,8 @@ struct TourDetailView: View {
     let tour: TourPlan
 
     @State private var isShowingEditor = false
+    @State private var isShowingScheduleEditor = false
+    @State private var editingScheduleItem: TourScheduleItem?
 
     var body: some View {
         Form {
@@ -46,6 +48,30 @@ struct TourDetailView: View {
                         .foregroundStyle(.secondary)
                     }
                 }
+            }
+
+            Section {
+                if sortedScheduleItems.isEmpty {
+                    Text("移動・宿泊予定はありません。")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(sortedScheduleItems) { item in
+                        Button {
+                            editingScheduleItem = item
+                        } label: {
+                            scheduleRow(item)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                Button {
+                    isShowingScheduleEditor = true
+                } label: {
+                    Label("予定を追加", systemImage: "plus.circle.fill")
+                }
+            } header: {
+                Text("移動・宿泊")
             }
 
             Section("イベント") {
@@ -93,10 +119,73 @@ struct TourDetailView: View {
                 availableEvents: eventViewModel.events
             )
         }
+        .sheet(isPresented: $isShowingScheduleEditor) {
+            TourScheduleEditorView(
+                viewModel: viewModel,
+                tour: tour
+            )
+        }
+        .sheet(item: $editingScheduleItem) { item in
+            TourScheduleEditorView(
+                viewModel: viewModel,
+                tour: tour,
+                item: item
+            )
+        }
     }
 
     private var sortedEvents: [LiveEvent] {
         tour.events.sorted { $0.startDate < $1.startDate }
+    }
+
+    private var sortedScheduleItems: [TourScheduleItem] {
+        tour.scheduleItems.sorted { $0.startDate < $1.startDate }
+    }
+
+    private func scheduleRow(_ item: TourScheduleItem) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: item.type.systemImage)
+                .foregroundStyle(.tint)
+                .frame(width: 24)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(item.title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+
+                Text(scheduleDateText(for: item))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                if item.type == .transportation {
+                    let route = [item.departureLocation, item.arrivalLocation]
+                        .filter { !$0.isEmpty }
+                        .joined(separator: " → ")
+                    if !route.isEmpty {
+                        Text(route)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+        }
+        .padding(.vertical, 2)
+    }
+
+    private func scheduleDateText(for item: TourScheduleItem) -> String {
+        let start = item.startDate.formatted(
+            .dateTime.month().day().hour().minute()
+        )
+        let end = item.endDate.formatted(
+            .dateTime.month().day().hour().minute()
+        )
+        return "\(start)〜\(end)"
     }
 
     private func currencyText(_ amount: Int) -> some View {
