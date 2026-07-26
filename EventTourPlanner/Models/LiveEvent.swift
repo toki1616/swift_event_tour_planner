@@ -40,6 +40,7 @@ final class LiveEvent {
     var startDate: Date
     var scheduledEndDate: Date?
     var budget: Int = 0
+    var tour: TourPlan?
     @Relationship(deleteRule: .cascade, inverse: \EventExpense.event)
     var expenses: [EventExpense] = []
 

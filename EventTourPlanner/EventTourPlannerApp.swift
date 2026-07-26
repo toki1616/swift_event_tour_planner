@@ -5,16 +5,23 @@ import SwiftData
 struct EventTourPlannerApp: App {
     private let modelContainer: ModelContainer
     private let eventListViewModel: EventListViewModel
+    private let tourListViewModel: TourListViewModel
 
     init() {
         do {
             let container = try ModelContainer(
                 for: LiveEvent.self,
-                EventExpense.self
+                EventExpense.self,
+                TourPlan.self
             )
             modelContainer = container
             eventListViewModel = EventListViewModel(
                 repository: SwiftDataEventRepository(
+                    modelContext: container.mainContext
+                )
+            )
+            tourListViewModel = TourListViewModel(
+                repository: SwiftDataTourRepository(
                     modelContext: container.mainContext
                 )
             )
@@ -25,7 +32,10 @@ struct EventTourPlannerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(viewModel: eventListViewModel)
+            ContentView(
+                eventViewModel: eventListViewModel,
+                tourViewModel: tourListViewModel
+            )
         }
         .modelContainer(modelContainer)
     }

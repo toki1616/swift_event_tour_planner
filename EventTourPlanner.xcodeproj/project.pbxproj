@@ -19,6 +19,13 @@
 		85F705053013861F00FF566F /* KeyboardDismissModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F705043013861F00FF566F /* KeyboardDismissModifier.swift */; };
 		85F705083013861F00FF566F /* ExpenseEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F705073013861F00FF566F /* ExpenseEditorView.swift */; };
 		85F7050B3013861F00FF566F /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F7050A3013861F00FF566F /* EventDetailView.swift */; };
+		85F706013013861F00FF566F /* TourPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F706003013861F00FF566F /* TourPlan.swift */; };
+		85F706033013861F00FF566F /* TourRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F706023013861F00FF566F /* TourRepository.swift */; };
+		85F706053013861F00FF566F /* SwiftDataTourRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F706043013861F00FF566F /* SwiftDataTourRepository.swift */; };
+		85F707013013861F00FF566F /* TourListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F707003013861F00FF566F /* TourListViewModel.swift */; };
+		85F707033013861F00FF566F /* TourEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F707023013861F00FF566F /* TourEditorView.swift */; };
+		85F707053013861F00FF566F /* TourListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F707043013861F00FF566F /* TourListView.swift */; };
+		85F708013013861F00FF566F /* TourDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F708003013861F00FF566F /* TourDetailView.swift */; };
 		924EBB960D47AD5A7BC2C351 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD5D43B0C4C0E223CE7DD57 /* Foundation.framework */; };
 		E7C4AE4415F618D292A2ED9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA35EA477DE169D49ADE0E98 /* Assets.xcassets */; };
 		E80260824ABEB42E41C82411 /* EventTourPlannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */; };
@@ -39,6 +46,13 @@
 		85F705043013861F00FF566F /* KeyboardDismissModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardDismissModifier.swift; sourceTree = "<group>"; };
 		85F705073013861F00FF566F /* ExpenseEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseEditorView.swift; sourceTree = "<group>"; };
 		85F7050A3013861F00FF566F /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
+		85F706003013861F00FF566F /* TourPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPlan.swift; sourceTree = "<group>"; };
+		85F706023013861F00FF566F /* TourRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourRepository.swift; sourceTree = "<group>"; };
+		85F706043013861F00FF566F /* SwiftDataTourRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTourRepository.swift; sourceTree = "<group>"; };
+		85F707003013861F00FF566F /* TourListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourListViewModel.swift; sourceTree = "<group>"; };
+		85F707023013861F00FF566F /* TourEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourEditorView.swift; sourceTree = "<group>"; };
+		85F707043013861F00FF566F /* TourListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourListView.swift; sourceTree = "<group>"; };
+		85F708003013861F00FF566F /* TourDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourDetailView.swift; sourceTree = "<group>"; };
 		DA35EA477DE169D49ADE0E98 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventTourPlannerApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -94,6 +108,7 @@
 			children = (
 				85F704E43013861F00FF566F /* Events */,
 				85F705093013861F00FF566F /* Expenses */,
+				85F707063013861F00FF566F /* Tours */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -103,6 +118,7 @@
 			children = (
 				85F705023013861F00FF566F /* EventExpense.swift */,
 				85F704E63013861F00FF566F /* LiveEvent.swift */,
+				85F706003013861F00FF566F /* TourPlan.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -112,6 +128,8 @@
 			children = (
 				85F704E83013861F00FF566F /* EventRepository.swift */,
 				85F704E93013861F00FF566F /* SwiftDataEventRepository.swift */,
+				85F706023013861F00FF566F /* TourRepository.swift */,
+				85F706043013861F00FF566F /* SwiftDataTourRepository.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -130,6 +148,17 @@
 				85F705073013861F00FF566F /* ExpenseEditorView.swift */,
 			);
 			path = Expenses;
+			sourceTree = "<group>";
+		};
+		85F707063013861F00FF566F /* Tours */ = {
+			isa = PBXGroup;
+			children = (
+				85F708003013861F00FF566F /* TourDetailView.swift */,
+				85F707023013861F00FF566F /* TourEditorView.swift */,
+				85F707043013861F00FF566F /* TourListView.swift */,
+				85F707003013861F00FF566F /* TourListViewModel.swift */,
+			);
+			path = Tours;
 			sourceTree = "<group>";
 		};
 		94D78412FB92BD7E979ED963 /* iOS */ = {
@@ -239,6 +268,13 @@
 				85F705053013861F00FF566F /* KeyboardDismissModifier.swift in Sources */,
 				85F705083013861F00FF566F /* ExpenseEditorView.swift in Sources */,
 				85F7050B3013861F00FF566F /* EventDetailView.swift in Sources */,
+				85F706013013861F00FF566F /* TourPlan.swift in Sources */,
+				85F706033013861F00FF566F /* TourRepository.swift in Sources */,
+				85F706053013861F00FF566F /* SwiftDataTourRepository.swift in Sources */,
+				85F707013013861F00FF566F /* TourListViewModel.swift in Sources */,
+				85F707033013861F00FF566F /* TourEditorView.swift in Sources */,
+				85F707053013861F00FF566F /* TourListView.swift in Sources */,
+				85F708013013861F00FF566F /* TourDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
