@@ -67,6 +67,7 @@ struct EventListView: View {
                 } label: {
                     Label("イベントを追加", systemImage: "plus")
                 }
+                .accessibilityIdentifier("event.addButton")
             }
             .overlay(alignment: .bottom) {
                 if let errorMessage = viewModel.errorMessage {

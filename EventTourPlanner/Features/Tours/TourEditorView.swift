@@ -69,6 +69,7 @@ struct TourEditorView: View {
                     TextField("ツアー名", text: $title)
                         .focused($focusedField, equals: .title)
                         .submitLabel(.done)
+                        .accessibilityIdentifier("tour.titleField")
 
                     DatePicker(
                         "開始日",
@@ -130,6 +131,7 @@ struct TourEditorView: View {
                     } label: {
                         Label("予定を追加", systemImage: "plus.circle.fill")
                     }
+                    .accessibilityIdentifier("tour.schedule.addButton")
                 } header: {
                     Text("移動・宿泊")
                 }
@@ -183,6 +185,7 @@ struct TourEditorView: View {
                             dismiss()
                         }
                     }
+                    .accessibilityIdentifier("tour.saveButton")
                     .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }

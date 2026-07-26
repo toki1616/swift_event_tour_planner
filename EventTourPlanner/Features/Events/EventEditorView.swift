@@ -90,9 +90,11 @@ struct EventEditorView: View {
                     TextField("イベント名", text: $title)
                         .focused($focusedField, equals: .title)
                         .submitLabel(.done)
+                        .accessibilityIdentifier("event.titleField")
                     TextField("会場", text: $venue)
                         .focused($focusedField, equals: .venue)
                         .submitLabel(.done)
+                        .accessibilityIdentifier("event.venueField")
                     Picker("種類", selection: $eventType) {
                         ForEach(EventType.allCases) { eventType in
                             Text(eventType.title)
@@ -144,6 +146,7 @@ struct EventEditorView: View {
                             dismiss()
                         }
                     }
+                    .accessibilityIdentifier("event.saveButton")
                     .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
 

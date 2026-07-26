@@ -110,6 +110,7 @@ struct TourScheduleEditorView: View {
                     TextField(titlePlaceholder, text: $title)
                         .focused($focusedField, equals: .title)
                         .submitLabel(.done)
+                        .accessibilityIdentifier("schedule.titleField")
 
                     DatePicker(
                         startDateTitle,
@@ -125,8 +126,10 @@ struct TourScheduleEditorView: View {
                     if type == .transportation {
                         TextField("出発地（任意）", text: $departureLocation)
                             .focused($focusedField, equals: .departureLocation)
+                            .accessibilityIdentifier("schedule.departureField")
                         TextField("到着地（任意）", text: $arrivalLocation)
                             .focused($focusedField, equals: .arrivalLocation)
+                            .accessibilityIdentifier("schedule.arrivalField")
                     }
                 }
 
@@ -161,6 +164,7 @@ struct TourScheduleEditorView: View {
                             dismiss()
                         }
                     }
+                    .accessibilityIdentifier("schedule.saveButton")
                     .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
