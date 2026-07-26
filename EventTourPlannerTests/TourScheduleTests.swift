@@ -103,13 +103,15 @@ final class TourScheduleTests: XCTestCase {
 
         XCTAssertTrue(result)
         XCTAssertEqual(repository.addedScheduleItems.count, 1)
+        XCTAssertEqual(repository.fetchCallCount, 0)
+        XCTAssertEqual(tour.scheduleItems.count, 1)
         XCTAssertNil(viewModel.errorMessage)
     }
 
     @MainActor
-    func testScheduleAdditionFailsWhenReloadFails() {
+    func testScheduleAdditionDoesNotReloadAfterSaving() {
         let repository = TourRepositoryStub()
-        repository.failFetchAfterMutation = true
+        repository.fetchError = TourRepositoryStub.reloadError
         let viewModel = TourListViewModel(repository: repository)
         let tour = makeTour()
 
@@ -125,15 +127,17 @@ final class TourScheduleTests: XCTestCase {
             notes: ""
         )
 
-        XCTAssertFalse(result)
+        XCTAssertTrue(result)
         XCTAssertEqual(repository.addedScheduleItems.count, 1)
-        XCTAssertNotNil(viewModel.errorMessage)
+        XCTAssertEqual(repository.fetchCallCount, 0)
+        XCTAssertEqual(tour.scheduleItems.count, 1)
+        XCTAssertNil(viewModel.errorMessage)
     }
 
     @MainActor
-    func testScheduleUpdateFailsWhenReloadFails() {
+    func testScheduleUpdateDoesNotReloadAfterSaving() {
         let repository = TourRepositoryStub()
-        repository.failFetchAfterMutation = true
+        repository.fetchError = TourRepositoryStub.reloadError
         let viewModel = TourListViewModel(repository: repository)
         let tour = makeTour()
         let item = TourScheduleItem(
@@ -156,15 +160,16 @@ final class TourScheduleTests: XCTestCase {
             notes: ""
         )
 
-        XCTAssertFalse(result)
+        XCTAssertTrue(result)
         XCTAssertEqual(repository.updatedScheduleItems.count, 1)
-        XCTAssertNotNil(viewModel.errorMessage)
+        XCTAssertEqual(repository.fetchCallCount, 0)
+        XCTAssertNil(viewModel.errorMessage)
     }
 
     @MainActor
-    func testScheduleDeletionFailsWhenReloadFails() {
+    func testScheduleDeletionDoesNotReloadAfterDeleting() {
         let repository = TourRepositoryStub()
-        repository.failFetchAfterMutation = true
+        repository.fetchError = TourRepositoryStub.reloadError
         let viewModel = TourListViewModel(repository: repository)
         let tour = makeTour()
         let item = TourScheduleItem(
@@ -177,9 +182,79 @@ final class TourScheduleTests: XCTestCase {
 
         let result = viewModel.deleteScheduleItem(item)
 
-        XCTAssertFalse(result)
+        XCTAssertTrue(result)
         XCTAssertEqual(repository.deletedScheduleItems.count, 1)
-        XCTAssertNotNil(viewModel.errorMessage)
+        XCTAssertEqual(repository.fetchCallCount, 0)
+        XCTAssertTrue(tour.scheduleItems.isEmpty)
+        XCTAssertNil(viewModel.errorMessage)
+    }
+
+    @MainActor
+    func testTourAdditionDoesNotReloadAfterSaving() {
+        let repository = TourRepositoryStub()
+        repository.fetchError = TourRepositoryStub.reloadError
+        let viewModel = TourListViewModel(repository: repository)
+        let startDate = Date()
+
+        let result = viewModel.addTour(
+            title: "追加ツアー",
+            startDate: startDate,
+            endDate: startDate.addingTimeInterval(86400),
+            budget: 10_000,
+            notes: "",
+            events: [],
+            scheduleItems: []
+        )
+
+        XCTAssertTrue(result)
+        XCTAssertEqual(repository.addedTours.count, 1)
+        XCTAssertEqual(repository.fetchCallCount, 0)
+        XCTAssertEqual(viewModel.tours.count, 1)
+        XCTAssertNil(viewModel.errorMessage)
+    }
+
+    @MainActor
+    func testTourUpdateDoesNotReloadAfterSaving() {
+        let tour = makeTour()
+        let repository = TourRepositoryStub()
+        repository.fetchedTours = [tour]
+        let viewModel = TourListViewModel(repository: repository)
+        XCTAssertTrue(viewModel.loadTours())
+        repository.fetchError = TourRepositoryStub.reloadError
+
+        let result = viewModel.updateTour(
+            tour,
+            title: "更新ツアー",
+            startDate: tour.startDate,
+            endDate: tour.endDate,
+            budget: 20_000,
+            notes: "更新",
+            events: [],
+            scheduleItems: []
+        )
+
+        XCTAssertTrue(result)
+        XCTAssertEqual(repository.updatedTours.count, 1)
+        XCTAssertEqual(repository.fetchCallCount, 1)
+        XCTAssertEqual(viewModel.tours.first?.title, "更新ツアー")
+        XCTAssertNil(viewModel.errorMessage)
+    }
+
+    @MainActor
+    func testTourDeletionDoesNotReloadAfterDeleting() {
+        let tour = makeTour()
+        let repository = TourRepositoryStub()
+        repository.fetchedTours = [tour]
+        let viewModel = TourListViewModel(repository: repository)
+        XCTAssertTrue(viewModel.loadTours())
+        repository.fetchError = TourRepositoryStub.reloadError
+
+        viewModel.deleteTour(tour)
+
+        XCTAssertEqual(repository.deletedTours.count, 1)
+        XCTAssertEqual(repository.fetchCallCount, 1)
+        XCTAssertTrue(viewModel.tours.isEmpty)
+        XCTAssertNil(viewModel.errorMessage)
     }
 
     private func makeTour() -> TourPlan {
@@ -215,54 +290,54 @@ final class TourScheduleTests: XCTestCase {
 
 @MainActor
 private final class TourRepositoryStub: TourRepository {
-    var failFetchAfterMutation = false
-    private var shouldFailFetch = false
+    static let reloadError = NSError(
+        domain: "TourRepositoryStub",
+        code: 1,
+        userInfo: [NSLocalizedDescriptionKey: "再読み込みに失敗しました。"]
+    )
+
+    var fetchError: Error?
+    var fetchCallCount = 0
+    var fetchedTours: [TourPlan] = []
+    var addedTours: [TourPlan] = []
+    var updatedTours: [TourPlan] = []
+    var deletedTours: [TourPlan] = []
     var addedScheduleItems: [TourScheduleItem] = []
     var updatedScheduleItems: [TourScheduleItem] = []
     var deletedScheduleItems: [TourScheduleItem] = []
 
     func fetchTours() throws -> [TourPlan] {
-        if shouldFailFetch {
-            throw NSError(
-                domain: "TourRepositoryStub",
-                code: 1,
-                userInfo: [NSLocalizedDescriptionKey: "再読み込みに失敗しました。"]
-            )
+        fetchCallCount += 1
+        if let fetchError {
+            throw fetchError
         }
-        return []
+        return fetchedTours
     }
 
     func add(_ tour: TourPlan) throws {
-        prepareFetchResult()
+        addedTours.append(tour)
     }
 
     func update(
         _ tour: TourPlan,
         replacingScheduleItems scheduleItems: [TourScheduleItem]
     ) throws {
-        prepareFetchResult()
+        updatedTours.append(tour)
     }
 
     func delete(_ tour: TourPlan) throws {
-        prepareFetchResult()
+        deletedTours.append(tour)
     }
 
     func addScheduleItem(_ item: TourScheduleItem, to tour: TourPlan) throws {
         addedScheduleItems.append(item)
-        prepareFetchResult()
     }
 
     func updateScheduleItem(_ item: TourScheduleItem) throws {
         updatedScheduleItems.append(item)
-        prepareFetchResult()
     }
 
     func deleteScheduleItem(_ item: TourScheduleItem) throws {
         deletedScheduleItems.append(item)
-        prepareFetchResult()
-    }
-
-    private func prepareFetchResult() {
-        shouldFailFetch = failFetchAfterMutation
     }
 }
