@@ -57,7 +57,10 @@ final class TourListViewModel {
                 makeScheduleItem(from: $0, tour: tour)
             }
             try repository.add(tour)
-            return loadTours()
+            tours.append(tour)
+            sortTours()
+            errorMessage = nil
+            return true
         } catch {
             errorMessage = error.localizedDescription
             return false
@@ -107,7 +110,9 @@ final class TourListViewModel {
                 tour,
                 replacingScheduleItems: replacementItems
             )
-            return loadTours()
+            sortTours()
+            errorMessage = nil
+            return true
         } catch {
             errorMessage = error.localizedDescription
             return false
@@ -117,7 +122,8 @@ final class TourListViewModel {
     func deleteTour(_ tour: TourPlan) {
         do {
             try repository.delete(tour)
-            loadTours()
+            tours.removeAll { $0 === tour }
+            errorMessage = nil
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -142,21 +148,24 @@ final class TourListViewModel {
             endDate: endDate
         ) else { return false }
 
+        let item = TourScheduleItem(
+            type: type,
+            title: input.title,
+            startDate: input.startDate,
+            endDate: input.endDate,
+            departureLocation: normalized(departureLocation),
+            arrivalLocation: normalized(arrivalLocation),
+            reservationNumber: normalized(reservationNumber),
+            notes: normalized(notes)
+        )
+
         do {
-            try repository.addScheduleItem(
-                TourScheduleItem(
-                    type: type,
-                    title: input.title,
-                    startDate: input.startDate,
-                    endDate: input.endDate,
-                    departureLocation: normalized(departureLocation),
-                    arrivalLocation: normalized(arrivalLocation),
-                    reservationNumber: normalized(reservationNumber),
-                    notes: normalized(notes)
-                ),
-                to: tour
-            )
-            return loadTours()
+            try repository.addScheduleItem(item, to: tour)
+            if !tour.scheduleItems.contains(where: { $0 === item }) {
+                tour.scheduleItems.append(item)
+            }
+            errorMessage = nil
+            return true
         } catch {
             errorMessage = error.localizedDescription
             return false
@@ -196,7 +205,8 @@ final class TourListViewModel {
 
         do {
             try repository.updateScheduleItem(item)
-            return loadTours()
+            errorMessage = nil
+            return true
         } catch {
             errorMessage = error.localizedDescription
             return false
@@ -205,9 +215,12 @@ final class TourListViewModel {
 
     @discardableResult
     func deleteScheduleItem(_ item: TourScheduleItem) -> Bool {
+        let tour = item.tour
         do {
             try repository.deleteScheduleItem(item)
-            return loadTours()
+            tour?.scheduleItems.removeAll { $0 === item }
+            errorMessage = nil
+            return true
         } catch {
             errorMessage = error.localizedDescription
             return false
@@ -293,6 +306,10 @@ final class TourListViewModel {
 
     private func normalized(_ value: String) -> String {
         value.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func sortTours() {
+        tours.sort { $0.startDate < $1.startDate }
     }
 
     private func makeScheduleItem(
