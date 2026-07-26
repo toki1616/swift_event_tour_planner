@@ -29,13 +29,15 @@ final class TourListViewModel {
         endDate: Date,
         budget: Int,
         notes: String,
-        events: [LiveEvent]
+        events: [LiveEvent],
+        scheduleItems: [TourScheduleDraft]
     ) -> Bool {
         guard let input = validatedInput(
             title: title,
             startDate: startDate,
             endDate: endDate,
-            events: events
+            events: events,
+            scheduleItems: scheduleItems
         ) else { return false }
 
         do {
@@ -48,6 +50,9 @@ final class TourListViewModel {
             )
             tour.events = events
             events.forEach { $0.tour = tour }
+            tour.scheduleItems = scheduleItems.map {
+                makeScheduleItem(from: $0, tour: tour)
+            }
             try repository.add(tour)
             loadTours()
             return true
@@ -65,13 +70,15 @@ final class TourListViewModel {
         endDate: Date,
         budget: Int,
         notes: String,
-        events: [LiveEvent]
+        events: [LiveEvent],
+        scheduleItems: [TourScheduleDraft]
     ) -> Bool {
         guard let input = validatedInput(
             title: title,
             startDate: startDate,
             endDate: endDate,
-            events: events
+            events: events,
+            scheduleItems: scheduleItems
         ) else { return false }
 
         tour.title = input.title
@@ -87,7 +94,17 @@ final class TourListViewModel {
         events.forEach { $0.tour = tour }
 
         do {
-            try repository.update(tour)
+            let replacementItems = scheduleItems.map { draft in
+                if let item = draft.sourceItem {
+                    apply(draft, to: item)
+                    return item
+                }
+                return makeScheduleItem(from: draft, tour: tour)
+            }
+            try repository.update(
+                tour,
+                replacingScheduleItems: replacementItems
+            )
             loadTours()
             return true
         } catch {
@@ -204,7 +221,8 @@ final class TourListViewModel {
         title: String,
         startDate: Date,
         endDate: Date,
-        events: [LiveEvent]
+        events: [LiveEvent],
+        scheduleItems: [TourScheduleDraft]
     ) -> (title: String, startDate: Date, endDate: Date)? {
         let normalizedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !normalizedTitle.isEmpty else {
@@ -229,6 +247,15 @@ final class TourListViewModel {
             firstDay <= $0.startDate && $0.startDate < dayAfterLast
         }) else {
             errorMessage = String(localized: "validation.tour_event_outside_period")
+            return nil
+        }
+        guard scheduleItems.allSatisfy({
+            !$0.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                && $0.startDate <= $0.endDate
+                && firstDay <= $0.startDate
+                && $0.endDate < dayAfterLast
+        }) else {
+            errorMessage = String(localized: "validation.schedule_outside_tour")
             return nil
         }
         return (normalizedTitle, startDate, endDate)
@@ -265,5 +292,36 @@ final class TourListViewModel {
 
     private func normalized(_ value: String) -> String {
         value.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func makeScheduleItem(
+        from draft: TourScheduleDraft,
+        tour: TourPlan
+    ) -> TourScheduleItem {
+        TourScheduleItem(
+            type: draft.type,
+            title: normalized(draft.title),
+            startDate: draft.startDate,
+            endDate: draft.endDate,
+            departureLocation: normalized(draft.departureLocation),
+            arrivalLocation: normalized(draft.arrivalLocation),
+            reservationNumber: normalized(draft.reservationNumber),
+            notes: normalized(draft.notes),
+            tour: tour
+        )
+    }
+
+    private func apply(
+        _ draft: TourScheduleDraft,
+        to item: TourScheduleItem
+    ) {
+        item.type = draft.type
+        item.title = normalized(draft.title)
+        item.startDate = draft.startDate
+        item.endDate = draft.endDate
+        item.departureLocation = normalized(draft.departureLocation)
+        item.arrivalLocation = normalized(draft.arrivalLocation)
+        item.reservationNumber = normalized(draft.reservationNumber)
+        item.notes = normalized(draft.notes)
     }
 }

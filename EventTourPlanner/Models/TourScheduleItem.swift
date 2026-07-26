@@ -24,6 +24,43 @@ enum TourScheduleType: String, CaseIterable, Identifiable {
     }
 }
 
+struct TourScheduleDraft: Identifiable {
+    let id: UUID
+    var type: TourScheduleType
+    var title: String
+    var startDate: Date
+    var endDate: Date
+    var departureLocation: String
+    var arrivalLocation: String
+    var reservationNumber: String
+    var notes: String
+    let sourceItem: TourScheduleItem?
+
+    init(
+        id: UUID = UUID(),
+        type: TourScheduleType,
+        title: String,
+        startDate: Date,
+        endDate: Date,
+        departureLocation: String = "",
+        arrivalLocation: String = "",
+        reservationNumber: String = "",
+        notes: String = "",
+        sourceItem: TourScheduleItem? = nil
+    ) {
+        self.id = id
+        self.type = type
+        self.title = title
+        self.startDate = startDate
+        self.endDate = endDate
+        self.departureLocation = departureLocation
+        self.arrivalLocation = arrivalLocation
+        self.reservationNumber = reservationNumber
+        self.notes = notes
+        self.sourceItem = sourceItem
+    }
+}
+
 @Model
 final class TourScheduleItem {
     var typeRawValue: String

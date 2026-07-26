@@ -14,6 +14,9 @@ struct TourEditorView: View {
     @State private var budget: Int?
     @State private var notes: String
     @State private var selectedEventIDs: Set<PersistentIdentifier>
+    @State private var scheduleDrafts: [TourScheduleDraft]
+    @State private var isShowingScheduleEditor = false
+    @State private var editingScheduleDraft: TourScheduleDraft?
     @FocusState private var focusedField: Field?
 
     private enum Field {
@@ -39,6 +42,23 @@ struct TourEditorView: View {
         _notes = State(initialValue: tour?.notes ?? "")
         _selectedEventIDs = State(
             initialValue: Set(tour?.events.map(\.persistentModelID) ?? [])
+        )
+        _scheduleDrafts = State(
+            initialValue: tour?.scheduleItems
+                .map {
+                    TourScheduleDraft(
+                        type: $0.type,
+                        title: $0.title,
+                        startDate: $0.startDate,
+                        endDate: $0.endDate,
+                        departureLocation: $0.departureLocation,
+                        arrivalLocation: $0.arrivalLocation,
+                        reservationNumber: $0.reservationNumber,
+                        notes: $0.notes,
+                        sourceItem: $0
+                    )
+                }
+                .sorted { $0.startDate < $1.startDate } ?? []
         )
     }
 
@@ -73,6 +93,45 @@ struct TourEditorView: View {
                     TextField("移動や宿泊などのメモ（任意）", text: $notes, axis: .vertical)
                         .lineLimit(3...8)
                         .focused($focusedField, equals: .notes)
+                }
+
+                Section {
+                    ForEach(sortedScheduleDrafts) { draft in
+                        Button {
+                            editingScheduleDraft = draft
+                        } label: {
+                            HStack {
+                                Label(
+                                    draft.title,
+                                    systemImage: draft.type.systemImage
+                                )
+                                .foregroundStyle(.primary)
+                                Spacer()
+                                Text(
+                                    draft.startDate,
+                                    format: .dateTime.month().day().hour().minute()
+                                )
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.tertiary)
+                            }
+                        }
+                    }
+                    .onDelete { offsets in
+                        let drafts = sortedScheduleDrafts
+                        let ids = offsets.map { drafts[$0].id }
+                        scheduleDrafts.removeAll { ids.contains($0.id) }
+                    }
+
+                    Button {
+                        isShowingScheduleEditor = true
+                    } label: {
+                        Label("予定を追加", systemImage: "plus.circle.fill")
+                    }
+                } header: {
+                    Text("移動・宿泊")
                 }
 
                 Section {
@@ -141,6 +200,41 @@ struct TourEditorView: View {
             } message: {
                 Text(viewModel.errorMessage ?? "")
             }
+            .sheet(isPresented: $isShowingScheduleEditor) {
+                TourScheduleEditorView(
+                    tourStartDate: startDate,
+                    tourEndDate: endDate
+                ) { draft in
+                    scheduleDrafts.append(draft)
+                    return true
+                }
+            }
+            .sheet(item: $editingScheduleDraft) { draft in
+                TourScheduleEditorView(
+                    draft: draft,
+                    tourStartDate: startDate,
+                    tourEndDate: endDate,
+                    onSave: { updatedDraft in
+                        guard let index = scheduleDrafts.firstIndex(
+                            where: { $0.id == draft.id }
+                        ) else {
+                            return false
+                        }
+                        scheduleDrafts[index].type = updatedDraft.type
+                        scheduleDrafts[index].title = updatedDraft.title
+                        scheduleDrafts[index].startDate = updatedDraft.startDate
+                        scheduleDrafts[index].endDate = updatedDraft.endDate
+                        scheduleDrafts[index].departureLocation = updatedDraft.departureLocation
+                        scheduleDrafts[index].arrivalLocation = updatedDraft.arrivalLocation
+                        scheduleDrafts[index].reservationNumber = updatedDraft.reservationNumber
+                        scheduleDrafts[index].notes = updatedDraft.notes
+                        return true
+                    },
+                    onDelete: {
+                        scheduleDrafts.removeAll { $0.id == draft.id }
+                    }
+                )
+            }
         }
     }
 
@@ -153,7 +247,8 @@ struct TourEditorView: View {
                 endDate: endDate,
                 budget: budget ?? 0,
                 notes: notes,
-                events: selectedEvents
+                events: selectedEvents,
+                scheduleItems: scheduleDrafts
             )
         }
         return viewModel.addTour(
@@ -162,8 +257,13 @@ struct TourEditorView: View {
             endDate: endDate,
             budget: budget ?? 0,
             notes: notes,
-            events: selectedEvents
+            events: selectedEvents,
+            scheduleItems: scheduleDrafts
         )
+    }
+
+    private var sortedScheduleDrafts: [TourScheduleDraft] {
+        scheduleDrafts.sorted { $0.startDate < $1.startDate }
     }
 
     private var selectableEvents: [LiveEvent] {

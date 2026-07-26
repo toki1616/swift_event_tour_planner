@@ -3,9 +3,13 @@ import SwiftUI
 struct TourScheduleEditorView: View {
     @Environment(\.dismiss) private var dismiss
 
-    let viewModel: TourListViewModel
-    let tour: TourPlan
+    let viewModel: TourListViewModel?
+    let tour: TourPlan?
     let item: TourScheduleItem?
+    let tourStartDate: Date
+    let tourEndDate: Date
+    let onDraftSave: ((TourScheduleDraft) -> Bool)?
+    let onDraftDelete: (() -> Void)?
 
     @State private var type: TourScheduleType
     @State private var title: String
@@ -34,6 +38,10 @@ struct TourScheduleEditorView: View {
         self.viewModel = viewModel
         self.tour = tour
         self.item = item
+        self.tourStartDate = tour.startDate
+        self.tourEndDate = tour.endDate
+        self.onDraftSave = nil
+        self.onDraftDelete = nil
 
         let tourEndLimit = Calendar.autoupdatingCurrent.date(
             bySettingHour: 23,
@@ -51,6 +59,39 @@ struct TourScheduleEditorView: View {
         _arrivalLocation = State(initialValue: item?.arrivalLocation ?? "")
         _reservationNumber = State(initialValue: item?.reservationNumber ?? "")
         _notes = State(initialValue: item?.notes ?? "")
+    }
+
+    init(
+        draft: TourScheduleDraft? = nil,
+        tourStartDate: Date,
+        tourEndDate: Date,
+        onSave: @escaping (TourScheduleDraft) -> Bool,
+        onDelete: (() -> Void)? = nil
+    ) {
+        viewModel = nil
+        tour = nil
+        item = nil
+        self.tourStartDate = tourStartDate
+        self.tourEndDate = tourEndDate
+        onDraftSave = onSave
+        onDraftDelete = onDelete
+
+        let endLimit = Calendar.autoupdatingCurrent.date(
+            bySettingHour: 23,
+            minute: 59,
+            second: 59,
+            of: tourEndDate
+        ) ?? tourEndDate
+        let defaultDate = draft?.startDate
+            ?? min(max(tourStartDate, Date()), endLimit)
+        _type = State(initialValue: draft?.type ?? .transportation)
+        _title = State(initialValue: draft?.title ?? "")
+        _startDate = State(initialValue: defaultDate)
+        _endDate = State(initialValue: draft?.endDate ?? defaultDate)
+        _departureLocation = State(initialValue: draft?.departureLocation ?? "")
+        _arrivalLocation = State(initialValue: draft?.arrivalLocation ?? "")
+        _reservationNumber = State(initialValue: draft?.reservationNumber ?? "")
+        _notes = State(initialValue: draft?.notes ?? "")
     }
 
     var body: some View {
@@ -74,7 +115,7 @@ struct TourScheduleEditorView: View {
                     DatePicker(
                         startDateTitle,
                         selection: $startDate,
-                        in: tour.startDate...tourEndLimit
+                        in: tourStartDate...tourEndLimit
                     )
                     DatePicker(
                         endDateTitle,
@@ -99,7 +140,7 @@ struct TourScheduleEditorView: View {
                         .focused($focusedField, equals: .notes)
                 }
 
-                if item != nil {
+                if item != nil || onDraftDelete != nil {
                     Section {
                         Button("削除", role: .destructive) {
                             isShowingDeleteConfirmation = true
@@ -128,15 +169,15 @@ struct TourScheduleEditorView: View {
             .alert(
                 "保存できません",
                 isPresented: Binding(
-                    get: { viewModel.errorMessage != nil },
-                    set: { if !$0 { viewModel.clearError() } }
+                    get: { viewModel?.errorMessage != nil },
+                    set: { if !$0 { viewModel?.clearError() } }
                 )
             ) {
                 Button("OK") {
-                    viewModel.clearError()
+                    viewModel?.clearError()
                 }
             } message: {
-                Text(viewModel.errorMessage ?? "")
+                Text(viewModel?.errorMessage ?? "")
             }
             .confirmationDialog(
                 "この予定を削除しますか？",
@@ -145,7 +186,9 @@ struct TourScheduleEditorView: View {
             ) {
                 Button("削除", role: .destructive) {
                     if let item {
-                        viewModel.deleteScheduleItem(item)
+                        viewModel?.deleteScheduleItem(item)
+                    } else {
+                        onDraftDelete?()
                     }
                     dismiss()
                 }
@@ -159,8 +202,8 @@ struct TourScheduleEditorView: View {
             bySettingHour: 23,
             minute: 59,
             second: 59,
-            of: tour.endDate
-        ) ?? tour.endDate
+            of: tourEndDate
+        ) ?? tourEndDate
     }
 
     private var titlePlaceholder: LocalizedStringKey {
@@ -176,7 +219,21 @@ struct TourScheduleEditorView: View {
     }
 
     private func save() -> Bool {
-        if let item {
+        if let onDraftSave {
+            return onDraftSave(
+                TourScheduleDraft(
+                    type: type,
+                    title: title,
+                    startDate: startDate,
+                    endDate: endDate,
+                    departureLocation: departureLocation,
+                    arrivalLocation: arrivalLocation,
+                    reservationNumber: reservationNumber,
+                    notes: notes
+                )
+            )
+        }
+        if let item, let viewModel {
             return viewModel.updateScheduleItem(
                 item,
                 type: type,
@@ -189,6 +246,7 @@ struct TourScheduleEditorView: View {
                 notes: notes
             )
         }
+        guard let viewModel, let tour else { return false }
         return viewModel.addScheduleItem(
             to: tour,
             type: type,
