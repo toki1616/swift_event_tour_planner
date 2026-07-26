@@ -1,13 +1,8 @@
 import SwiftUI
 
 struct TourDetailView: View {
-    let viewModel: TourListViewModel
     let eventViewModel: EventListViewModel
     let tour: TourPlan
-
-    @State private var isShowingEditor = false
-    @State private var isShowingScheduleEditor = false
-    @State private var editingScheduleItem: TourScheduleItem?
 
     var body: some View {
         Form {
@@ -56,19 +51,8 @@ struct TourDetailView: View {
                         .foregroundStyle(.secondary)
                 } else {
                     ForEach(sortedScheduleItems) { item in
-                        Button {
-                            editingScheduleItem = item
-                        } label: {
-                            scheduleRow(item)
-                        }
-                        .buttonStyle(.plain)
+                        scheduleRow(item)
                     }
-                }
-
-                Button {
-                    isShowingScheduleEditor = true
-                } label: {
-                    Label("予定を追加", systemImage: "plus.circle.fill")
                 }
             } header: {
                 Text("移動・宿泊")
@@ -107,31 +91,6 @@ struct TourDetailView: View {
         }
         .navigationTitle("ツアー詳細")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            Button("編集") {
-                isShowingEditor = true
-            }
-        }
-        .sheet(isPresented: $isShowingEditor) {
-            TourEditorView(
-                viewModel: viewModel,
-                tour: tour,
-                availableEvents: eventViewModel.events
-            )
-        }
-        .sheet(isPresented: $isShowingScheduleEditor) {
-            TourScheduleEditorView(
-                viewModel: viewModel,
-                tour: tour
-            )
-        }
-        .sheet(item: $editingScheduleItem) { item in
-            TourScheduleEditorView(
-                viewModel: viewModel,
-                tour: tour,
-                item: item
-            )
-        }
     }
 
     private var sortedEvents: [LiveEvent] {
@@ -170,10 +129,6 @@ struct TourDetailView: View {
             }
 
             Spacer()
-
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
         }
         .padding(.vertical, 2)
     }
