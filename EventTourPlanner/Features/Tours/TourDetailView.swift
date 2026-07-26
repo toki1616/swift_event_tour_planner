@@ -1,8 +1,11 @@
 import SwiftUI
 
 struct TourDetailView: View {
+    let viewModel: TourListViewModel
     let eventViewModel: EventListViewModel
     let tour: TourPlan
+
+    @State private var isShowingEditor = false
 
     var body: some View {
         Form {
@@ -91,6 +94,18 @@ struct TourDetailView: View {
         }
         .navigationTitle("ツアー詳細")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            Button("編集") {
+                isShowingEditor = true
+            }
+        }
+        .sheet(isPresented: $isShowingEditor) {
+            TourEditorView(
+                viewModel: viewModel,
+                tour: tour,
+                availableEvents: eventViewModel.events
+            )
+        }
     }
 
     private var sortedEvents: [LiveEvent] {

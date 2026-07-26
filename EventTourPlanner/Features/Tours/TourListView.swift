@@ -21,6 +21,7 @@ struct TourListView: View {
                     List(viewModel.tours) { tour in
                         NavigationLink {
                             TourDetailView(
+                                viewModel: viewModel,
                                 eventViewModel: eventViewModel,
                                 tour: tour
                             )
