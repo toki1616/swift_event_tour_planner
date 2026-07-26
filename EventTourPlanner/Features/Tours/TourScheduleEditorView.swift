@@ -185,11 +185,14 @@ struct TourScheduleEditorView: View {
             ) {
                 Button("削除", role: .destructive) {
                     if let item {
-                        viewModel?.deleteScheduleItem(item)
+                        guard let viewModel else { return }
+                        if viewModel.deleteScheduleItem(item) {
+                            dismiss()
+                        }
                     } else {
                         onDraftDelete?()
+                        dismiss()
                     }
-                    dismiss()
                 }
                 Button("キャンセル", role: .cancel) {}
             }

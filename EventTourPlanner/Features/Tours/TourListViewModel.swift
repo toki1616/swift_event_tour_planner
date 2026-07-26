@@ -204,12 +204,15 @@ final class TourListViewModel {
         }
     }
 
-    func deleteScheduleItem(_ item: TourScheduleItem) {
+    @discardableResult
+    func deleteScheduleItem(_ item: TourScheduleItem) -> Bool {
         do {
             try repository.deleteScheduleItem(item)
             loadTours()
+            return true
         } catch {
             errorMessage = error.localizedDescription
+            return false
         }
     }
 
