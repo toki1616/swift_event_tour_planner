@@ -26,7 +26,27 @@ final class SwiftDataTourRepository: TourRepository {
         }
     }
 
-    func update(_ tour: TourPlan) throws {
+    func update(
+        _ tour: TourPlan,
+        replacingScheduleItems scheduleItems: [TourScheduleItem]
+    ) throws {
+        let previousItems = tour.scheduleItems
+        let deletedItems = previousItems.filter { previousItem in
+            !scheduleItems.contains { $0 === previousItem }
+        }
+        for item in deletedItems {
+            modelContext.delete(item)
+        }
+        tour.scheduleItems = scheduleItems
+        for item in scheduleItems where item.modelContext == nil {
+            item.tour = tour
+            modelContext.insert(item)
+        }
+        try saveOrRollback()
+    }
+
+    func delete(_ tour: TourPlan) throws {
+        modelContext.delete(tour)
         do {
             try modelContext.save()
         } catch {
@@ -35,8 +55,22 @@ final class SwiftDataTourRepository: TourRepository {
         }
     }
 
-    func delete(_ tour: TourPlan) throws {
-        modelContext.delete(tour)
+    func addScheduleItem(_ item: TourScheduleItem, to tour: TourPlan) throws {
+        item.tour = tour
+        modelContext.insert(item)
+        try saveOrRollback()
+    }
+
+    func updateScheduleItem(_ item: TourScheduleItem) throws {
+        try saveOrRollback()
+    }
+
+    func deleteScheduleItem(_ item: TourScheduleItem) throws {
+        modelContext.delete(item)
+        try saveOrRollback()
+    }
+
+    private func saveOrRollback() throws {
         do {
             try modelContext.save()
         } catch {

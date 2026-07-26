@@ -12,7 +12,8 @@ struct EventTourPlannerApp: App {
             let container = try ModelContainer(
                 for: LiveEvent.self,
                 EventExpense.self,
-                TourPlan.self
+                TourPlan.self,
+                TourScheduleItem.self
             )
             modelContainer = container
             eventListViewModel = EventListViewModel(

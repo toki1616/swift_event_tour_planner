@@ -10,6 +10,8 @@ final class TourPlan {
     var notes: String
     @Relationship(deleteRule: .nullify, inverse: \LiveEvent.tour)
     var events: [LiveEvent] = []
+    @Relationship(deleteRule: .cascade, inverse: \TourScheduleItem.tour)
+    var scheduleItems: [TourScheduleItem] = []
 
     var totalExpense: Int {
         events.reduce(0) { $0 + $1.totalExpense }

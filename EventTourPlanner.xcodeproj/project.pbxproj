@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		050DE9973F4678CD63B9399E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD5D43B0C4C0E223CE7DD57 /* Foundation.framework */; };
 		0B1F7BE39A998B8F21DC4885 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61596CA5DF79FC979B45D6DD /* ContentView.swift */; };
+		2B7F3BBAA7F578B8A277B7CE /* TourScheduleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC7DE0ECAD1D245BA669B33 /* TourScheduleTests.swift */; };
 		85F704EB3013861F00FF566F /* EventEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F704E13013861F00FF566F /* EventEditorView.swift */; };
 		85F704EC3013861F00FF566F /* SwiftDataEventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F704E93013861F00FF566F /* SwiftDataEventRepository.swift */; };
 		85F704ED3013861F00FF566F /* LiveEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F704E63013861F00FF566F /* LiveEvent.swift */; };
@@ -26,10 +28,22 @@
 		85F707033013861F00FF566F /* TourEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F707023013861F00FF566F /* TourEditorView.swift */; };
 		85F707053013861F00FF566F /* TourListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F707043013861F00FF566F /* TourListView.swift */; };
 		85F708013013861F00FF566F /* TourDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F708003013861F00FF566F /* TourDetailView.swift */; };
+		85F709013013861F00FF566F /* TourScheduleItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F709003013861F00FF566F /* TourScheduleItem.swift */; };
+		85F70A013013861F00FF566F /* TourScheduleEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F70A003013861F00FF566F /* TourScheduleEditorView.swift */; };
 		924EBB960D47AD5A7BC2C351 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD5D43B0C4C0E223CE7DD57 /* Foundation.framework */; };
 		E7C4AE4415F618D292A2ED9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA35EA477DE169D49ADE0E98 /* Assets.xcassets */; };
 		E80260824ABEB42E41C82411 /* EventTourPlannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E9289594413076522C728A77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FDCE144B5FEC75F7E80D641A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8ADD2B737FBDC82E40A064E3;
+			remoteInfo = EventTourPlanner;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		2C19F6356BFB296217321D3C /* EventTourPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventTourPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -53,6 +67,10 @@
 		85F707023013861F00FF566F /* TourEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourEditorView.swift; sourceTree = "<group>"; };
 		85F707043013861F00FF566F /* TourListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourListView.swift; sourceTree = "<group>"; };
 		85F708003013861F00FF566F /* TourDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourDetailView.swift; sourceTree = "<group>"; };
+		85F709003013861F00FF566F /* TourScheduleItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourScheduleItem.swift; sourceTree = "<group>"; };
+		85F70A003013861F00FF566F /* TourScheduleEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourScheduleEditorView.swift; sourceTree = "<group>"; };
+		98DA83CBFB95ACD636D219A4 /* EventTourPlannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EventTourPlannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CBC7DE0ECAD1D245BA669B33 /* TourScheduleTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TourScheduleTests.swift; sourceTree = "<group>"; };
 		DA35EA477DE169D49ADE0E98 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DF1F4567A2DDE264301B1921 /* EventTourPlannerApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventTourPlannerApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -63,6 +81,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				924EBB960D47AD5A7BC2C351 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		375C9A15D02E028F5F54586B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				050DE9973F4678CD63B9399E /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +145,7 @@
 				85F705023013861F00FF566F /* EventExpense.swift */,
 				85F704E63013861F00FF566F /* LiveEvent.swift */,
 				85F706003013861F00FF566F /* TourPlan.swift */,
+				85F709003013861F00FF566F /* TourScheduleItem.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -157,6 +184,7 @@
 				85F707023013861F00FF566F /* TourEditorView.swift */,
 				85F707043013861F00FF566F /* TourListView.swift */,
 				85F707003013861F00FF566F /* TourListViewModel.swift */,
+				85F70A003013861F00FF566F /* TourScheduleEditorView.swift */,
 			);
 			path = Tours;
 			sourceTree = "<group>";
@@ -169,10 +197,20 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
+		AC3A30B2CF23A3B934565D38 /* EventTourPlannerTests */ = {
+			isa = PBXGroup;
+			children = (
+				CBC7DE0ECAD1D245BA669B33 /* TourScheduleTests.swift */,
+			);
+			name = EventTourPlannerTests;
+			path = EventTourPlannerTests;
+			sourceTree = "<group>";
+		};
 		B0480517E561F02ACBD1DF66 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				2C19F6356BFB296217321D3C /* EventTourPlanner.app */,
+				98DA83CBFB95ACD636D219A4 /* EventTourPlannerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -183,6 +221,7 @@
 				B0480517E561F02ACBD1DF66 /* Products */,
 				28A1CB85AA258F801A0264D8 /* Frameworks */,
 				6811ED04536681A662F2B307 /* EventTourPlanner */,
+				AC3A30B2CF23A3B934565D38 /* EventTourPlannerTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -205,6 +244,24 @@
 			productName = EventTourPlanner;
 			productReference = 2C19F6356BFB296217321D3C /* EventTourPlanner.app */;
 			productType = "com.apple.product-type.application";
+		};
+		F2D6CC2F96C6C099E1E973FA /* EventTourPlannerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A39F10BEE41F67312B115BE /* Build configuration list for PBXNativeTarget "EventTourPlannerTests" */;
+			buildPhases = (
+				C772F74BEA59A674B23ED34B /* Sources */,
+				375C9A15D02E028F5F54586B /* Frameworks */,
+				5069013C2D824082C5159704 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A041E329366100C005386397 /* PBXTargetDependency */,
+			);
+			name = EventTourPlannerTests;
+			productName = EventTourPlannerTests;
+			productReference = 98DA83CBFB95ACD636D219A4 /* EventTourPlannerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -235,11 +292,19 @@
 			projectRoot = "";
 			targets = (
 				8ADD2B737FBDC82E40A064E3 /* EventTourPlanner */,
+				F2D6CC2F96C6C099E1E973FA /* EventTourPlannerTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		5069013C2D824082C5159704 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6A0AAE6CBA0FA01BB2CA1F2E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -275,10 +340,29 @@
 				85F707033013861F00FF566F /* TourEditorView.swift in Sources */,
 				85F707053013861F00FF566F /* TourListView.swift in Sources */,
 				85F708013013861F00FF566F /* TourDetailView.swift in Sources */,
+				85F709013013861F00FF566F /* TourScheduleItem.swift in Sources */,
+				85F70A013013861F00FF566F /* TourScheduleEditorView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C772F74BEA59A674B23ED34B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B7F3BBAA7F578B8A277B7CE /* TourScheduleTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A041E329366100C005386397 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EventTourPlanner;
+			target = 8ADD2B737FBDC82E40A064E3 /* EventTourPlanner */;
+			targetProxy = E9289594413076522C728A77 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		00D7B578D3A7C396F74FDD75 /* Debug */ = {
@@ -400,6 +484,35 @@
 			};
 			name = Debug;
 		};
+		61247CFA0AD2F7B9B98F5141 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.toyoda.EventTourPlannerTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EventTourPlanner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/EventTourPlanner";
+			};
+			name = Debug;
+		};
+		7490B639846B75435EF19FC6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.toyoda.EventTourPlannerTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EventTourPlanner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/EventTourPlanner";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		AA71A38BDC267BD96A77DFC9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -462,6 +575,15 @@
 			buildConfigurations = (
 				0F480327E6518C368B78B3B1 /* Release */,
 				1FACD37316B2CF921A5EA997 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7A39F10BEE41F67312B115BE /* Build configuration list for PBXNativeTarget "EventTourPlannerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7490B639846B75435EF19FC6 /* Release */,
+				61247CFA0AD2F7B9B98F5141 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
