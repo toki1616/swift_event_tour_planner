@@ -13,12 +13,15 @@ final class TourListViewModel {
         self.repository = repository
     }
 
-    func loadTours() {
+    @discardableResult
+    func loadTours() -> Bool {
         do {
             tours = try repository.fetchTours()
             errorMessage = nil
+            return true
         } catch {
             errorMessage = error.localizedDescription
+            return false
         }
     }
 
@@ -54,8 +57,7 @@ final class TourListViewModel {
                 makeScheduleItem(from: $0, tour: tour)
             }
             try repository.add(tour)
-            loadTours()
-            return true
+            return loadTours()
         } catch {
             errorMessage = error.localizedDescription
             return false
@@ -105,8 +107,7 @@ final class TourListViewModel {
                 tour,
                 replacingScheduleItems: replacementItems
             )
-            loadTours()
-            return true
+            return loadTours()
         } catch {
             errorMessage = error.localizedDescription
             return false
@@ -155,8 +156,7 @@ final class TourListViewModel {
                 ),
                 to: tour
             )
-            loadTours()
-            return true
+            return loadTours()
         } catch {
             errorMessage = error.localizedDescription
             return false
@@ -196,8 +196,7 @@ final class TourListViewModel {
 
         do {
             try repository.updateScheduleItem(item)
-            loadTours()
-            return true
+            return loadTours()
         } catch {
             errorMessage = error.localizedDescription
             return false
@@ -208,8 +207,7 @@ final class TourListViewModel {
     func deleteScheduleItem(_ item: TourScheduleItem) -> Bool {
         do {
             try repository.deleteScheduleItem(item)
-            loadTours()
-            return true
+            return loadTours()
         } catch {
             errorMessage = error.localizedDescription
             return false
