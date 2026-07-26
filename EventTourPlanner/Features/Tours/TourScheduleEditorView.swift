@@ -10,6 +10,7 @@ struct TourScheduleEditorView: View {
     let tourEndDate: Date
     let onDraftSave: ((TourScheduleDraft) -> Bool)?
     let onDraftDelete: (() -> Void)?
+    let isEditing: Bool
 
     @State private var type: TourScheduleType
     @State private var title: String
@@ -42,19 +43,18 @@ struct TourScheduleEditorView: View {
         self.tourEndDate = tour.endDate
         self.onDraftSave = nil
         self.onDraftDelete = nil
+        self.isEditing = item != nil
 
-        let tourEndLimit = Calendar.autoupdatingCurrent.date(
-            bySettingHour: 23,
-            minute: 59,
-            second: 59,
-            of: tour.endDate
-        ) ?? tour.endDate
-        let defaultDate = item?.startDate
-            ?? min(max(tour.startDate, Date()), tourEndLimit)
+        let dates = TourScheduleDateRange.clampedDates(
+            startDate: item?.startDate ?? Date(),
+            endDate: item?.endDate ?? Date(),
+            tourStartDate: tour.startDate,
+            tourEndDate: tour.endDate
+        )
         _type = State(initialValue: item?.type ?? .transportation)
         _title = State(initialValue: item?.title ?? "")
-        _startDate = State(initialValue: defaultDate)
-        _endDate = State(initialValue: item?.endDate ?? defaultDate)
+        _startDate = State(initialValue: dates.startDate)
+        _endDate = State(initialValue: dates.endDate)
         _departureLocation = State(initialValue: item?.departureLocation ?? "")
         _arrivalLocation = State(initialValue: item?.arrivalLocation ?? "")
         _reservationNumber = State(initialValue: item?.reservationNumber ?? "")
@@ -75,19 +75,18 @@ struct TourScheduleEditorView: View {
         self.tourEndDate = tourEndDate
         onDraftSave = onSave
         onDraftDelete = onDelete
+        isEditing = draft != nil
 
-        let endLimit = Calendar.autoupdatingCurrent.date(
-            bySettingHour: 23,
-            minute: 59,
-            second: 59,
-            of: tourEndDate
-        ) ?? tourEndDate
-        let defaultDate = draft?.startDate
-            ?? min(max(tourStartDate, Date()), endLimit)
+        let dates = TourScheduleDateRange.clampedDates(
+            startDate: draft?.startDate ?? Date(),
+            endDate: draft?.endDate ?? Date(),
+            tourStartDate: tourStartDate,
+            tourEndDate: tourEndDate
+        )
         _type = State(initialValue: draft?.type ?? .transportation)
         _title = State(initialValue: draft?.title ?? "")
-        _startDate = State(initialValue: defaultDate)
-        _endDate = State(initialValue: draft?.endDate ?? defaultDate)
+        _startDate = State(initialValue: dates.startDate)
+        _endDate = State(initialValue: dates.endDate)
         _departureLocation = State(initialValue: draft?.departureLocation ?? "")
         _arrivalLocation = State(initialValue: draft?.arrivalLocation ?? "")
         _reservationNumber = State(initialValue: draft?.reservationNumber ?? "")
@@ -148,7 +147,7 @@ struct TourScheduleEditorView: View {
                     }
                 }
             }
-            .navigationTitle(item == nil ? "予定を追加" : "予定を編集")
+            .navigationTitle(isEditing ? "予定を編集" : "予定を追加")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

@@ -61,6 +61,32 @@ struct TourScheduleDraft: Identifiable {
     }
 }
 
+enum TourScheduleDateRange {
+    static func clampedDates(
+        startDate: Date,
+        endDate: Date,
+        tourStartDate: Date,
+        tourEndDate: Date,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> (startDate: Date, endDate: Date) {
+        let endLimit = calendar.date(
+            bySettingHour: 23,
+            minute: 59,
+            second: 59,
+            of: tourEndDate
+        ) ?? tourEndDate
+        let clampedStartDate = min(
+            max(startDate, tourStartDate),
+            endLimit
+        )
+        let clampedEndDate = min(
+            max(endDate, clampedStartDate),
+            endLimit
+        )
+        return (clampedStartDate, clampedEndDate)
+    }
+}
+
 @Model
 final class TourScheduleItem {
     var typeRawValue: String
