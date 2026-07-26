@@ -18,7 +18,12 @@ final class SwiftDataTourRepository: TourRepository {
 
     func add(_ tour: TourPlan) throws {
         modelContext.insert(tour)
-        try modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            modelContext.rollback()
+            throw error
+        }
     }
 
     func update(_ tour: TourPlan) throws {
@@ -32,6 +37,11 @@ final class SwiftDataTourRepository: TourRepository {
 
     func delete(_ tour: TourPlan) throws {
         modelContext.delete(tour)
-        try modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            modelContext.rollback()
+            throw error
+        }
     }
 }

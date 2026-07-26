@@ -1,12 +1,38 @@
 {
   "sourceLanguage" : "ja",
   "strings" : {
+    "「%@」を削除しますか？" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete “%@”?"
+          }
+        }
+      }
+    },
     "%@ / %@" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ / %2$@"
+          }
+        }
+      }
+    },
+    "%@〜%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ – %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@〜%2$@"
           }
         }
       }
@@ -139,6 +165,26 @@
         }
       }
     },
+    "https://example.com" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://example.com"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
     "validation.event_name_required" : {
       "localizations" : {
         "en" : {
@@ -156,6 +202,7 @@
       }
     },
     "validation.expense_amount_positive" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -184,6 +231,80 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "費用名を入力してください。"
+          }
+        }
+      }
+    },
+    "validation.tour_date_order" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set the end date on or after the start date."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "終了日は開始日以降に設定してください。"
+          }
+        }
+      }
+    },
+    "validation.tour_event_outside_period" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select events within the tour dates."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ツアー期間内のイベントを選択してください。"
+          }
+        }
+      }
+    },
+    "validation.tour_name_required" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a tour name."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ツアー名を入力してください。"
+          }
+        }
+      }
+    },
+    "validation.tour_period_invalid" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set valid tour dates."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ツアー期間を正しく設定してください。"
+          }
+        }
+      }
+    },
+    "エラー" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
           }
         }
       }
@@ -248,22 +369,22 @@
         }
       }
     },
-    "イベント詳細" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Event Details"
-          }
-        }
-      }
-    },
     "イベント情報" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Event Information"
+          }
+        }
+      }
+    },
+    "イベント詳細" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event Details"
           }
         }
       }
@@ -308,6 +429,146 @@
         }
       }
     },
+    "サイトURL（任意）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Website URL (Optional)"
+          }
+        }
+      }
+    },
+    "サイトを開く" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Website"
+          }
+        }
+      }
+    },
+    "ツアー" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tours"
+          }
+        }
+      }
+    },
+    "ツアーはありません" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Tours"
+          }
+        }
+      }
+    },
+    "ツアーを削除してもイベントは削除されません。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deleting this tour will not delete its events."
+          }
+        }
+      }
+    },
+    "ツアーを登録" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Tour"
+          }
+        }
+      }
+    },
+    "ツアーを編集" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Tour"
+          }
+        }
+      }
+    },
+    "ツアーを追加" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Tour"
+          }
+        }
+      }
+    },
+    "ツアー名" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tour Name"
+          }
+        }
+      }
+    },
+    "ツアー情報" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tour Information"
+          }
+        }
+      }
+    },
+    "ツアー期間内のイベントがありません。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no events within the tour dates."
+          }
+        }
+      }
+    },
+    "ツアー詳細" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tour Details"
+          }
+        }
+      }
+    },
+    "メモ" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes"
+          }
+        }
+      }
+    },
+    "リンク" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Links"
+          }
+        }
+      }
+    },
     "予算" : {
       "localizations" : {
         "en" : {
@@ -344,6 +605,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Save"
+          }
+        }
+      }
+    },
+    "保存できません" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to Save"
+          }
+        }
+      }
+    },
+    "別のツアーに登録済みのイベントは選択できません。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Events already assigned to another tour cannot be selected."
           }
         }
       }
@@ -398,42 +679,62 @@
         }
       }
     },
-    "https://example.com" : {
+    "時間" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://example.com"
+            "value" : "Schedule"
           }
         }
       }
     },
-    "サイトURL（任意）" : {
+    "期間" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Website URL (Optional)"
+            "value" : "Dates"
           }
         }
       }
     },
-    "サイトを開く" : {
+    "標準時間に戻す" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Open Website"
+            "value" : "Reset to Default Times"
           }
         }
       }
     },
-    "リンク" : {
+    "残額" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Links"
+            "value" : "Remaining"
+          }
+        }
+      }
+    },
+    "登録済みのイベントがありません。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no events."
+          }
+        }
+      }
+    },
+    "移動や宿泊などのメモ（任意）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Travel or accommodation notes (Optional)"
           }
         }
       }
@@ -448,22 +749,22 @@
         }
       }
     },
-    "時間" : {
+    "紐付けられたイベントはありません。" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schedule"
+            "value" : "No events are linked to this tour."
           }
         }
       }
     },
-    "残額" : {
+    "終了日" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remaining"
+            "value" : "End Date"
           }
         }
       }
@@ -488,22 +789,12 @@
         }
       }
     },
-    "電子チケットURL（任意）" : {
+    "複数のイベントをまとめるツアーを追加しましょう。" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Electronic Ticket URL (Optional)"
-          }
-        }
-      }
-    },
-    "電子チケットを開く" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open Electronic Ticket"
+            "value" : "Add a tour to organize multiple events."
           }
         }
       }
@@ -528,22 +819,22 @@
         }
       }
     },
-    "費用を追加" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add Expense"
-          }
-        }
-      }
-    },
     "費用を編集" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edit Expense"
+          }
+        }
+      }
+    },
+    "費用を追加" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Expense"
           }
         }
       }
@@ -600,6 +891,16 @@
         }
       }
     },
+    "開始日" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Date"
+          }
+        }
+      }
+    },
     "開演" : {
       "localizations" : {
         "en" : {
@@ -631,16 +932,6 @@
         }
       }
     },
-    "標準時間に戻す" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reset to Default Times"
-          }
-        }
-      }
-    },
     "集合" : {
       "localizations" : {
         "en" : {
@@ -657,6 +948,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Meet-up Time"
+          }
+        }
+      }
+    },
+    "電子チケットURL（任意）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Electronic Ticket URL (Optional)"
+          }
+        }
+      }
+    },
+    "電子チケットを開く" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Electronic Ticket"
           }
         }
       }
