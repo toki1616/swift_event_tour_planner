@@ -12,6 +12,7 @@ struct EventDetailView: View {
                 LabeledContent("イベント名", value: event.title)
                 if !event.venue.isEmpty {
                     LabeledContent("会場", value: event.venue)
+                        .accessibilityIdentifier("event.detail.venue")
                 }
                 LabeledContent("種類", value: event.eventType.title)
             }

@@ -9,11 +9,16 @@ struct EventTourPlannerApp: App {
 
     init() {
         do {
+            let configuration = ModelConfiguration(
+                isStoredInMemoryOnly: ProcessInfo.processInfo.arguments
+                    .contains("--uitesting")
+            )
             let container = try ModelContainer(
                 for: LiveEvent.self,
                 EventExpense.self,
                 TourPlan.self,
-                TourScheduleItem.self
+                TourScheduleItem.self,
+                configurations: configuration
             )
             modelContainer = container
             eventListViewModel = EventListViewModel(

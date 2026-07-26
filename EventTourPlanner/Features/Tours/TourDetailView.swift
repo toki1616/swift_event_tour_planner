@@ -139,6 +139,7 @@ struct TourDetailView: View {
                         Text(route)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
+                            .accessibilityIdentifier("tour.detail.scheduleRoute")
                     }
                 }
 

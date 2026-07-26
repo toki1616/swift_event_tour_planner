@@ -34,6 +34,20 @@
                ReferencedContainer = "container:EventTourPlanner.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C50000000000000000000001"
+               BuildableName = "EventTourPlannerUITests.xctest"
+               BlueprintName = "EventTourPlannerUITests"
+               ReferencedContainer = "container:EventTourPlanner.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -58,6 +72,16 @@
                BlueprintIdentifier = "F2D6CC2F96C6C099E1E973FA"
                BuildableName = "EventTourPlannerTests.xctest"
                BlueprintName = "EventTourPlannerTests"
+               ReferencedContainer = "container:EventTourPlanner.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C50000000000000000000001"
+               BuildableName = "EventTourPlannerUITests.xctest"
+               BlueprintName = "EventTourPlannerUITests"
                ReferencedContainer = "container:EventTourPlanner.xcodeproj">
             </BuildableReference>
          </TestableReference>

@@ -52,6 +52,7 @@ struct TourListView: View {
                 } label: {
                     Label("ツアーを追加", systemImage: "plus")
                 }
+                .accessibilityIdentifier("tour.addButton")
             }
         }
         .task {
